@@ -5,36 +5,45 @@
    ========================================================================== */
 
 :root {
-  /* Warm Minimalist Palette */
-  --bg-primary: #f8f5f0;       /* Warm Ivory/Cream background */
-  --bg-secondary: #f2ede4;     /* Slightly deeper warm cream */
-  --bg-tertiary: #eae2d6;      /* Sand */
-  --bg-banner: #faf0e7;        /* Sampled hero banner cream */
-  --bg-card: #ffffff;          /* Crisp clean white cards */
-  --bg-card-hover: #ffffff;
-  --bg-glass: rgba(255, 255, 255, 0.92);
+  /* Minimal Lavender Pink Palette */
+  --bg-primary: #FAF7FC;        /* Ethereal clean porcelain lavender */
+  --bg-secondary: #F4ECF9;      /* Delicate lavender blush */
+  --bg-tertiary: #EBDCF5;       /* Soft lilac */
+  --bg-banner: #FFFFFF;         /* Pure crisp poster white */
+  --bg-poster: linear-gradient(180deg, #FFFFFF 0%, #FAF6FD 100%);
+  --bg-card: #FFFFFF;           /* Pristine white cards */
+  --bg-card-hover: #FFFFFF;
+  --bg-glass: rgba(255, 255, 255, 0.9);
 
-  --border-subtle: #eae3d9;    /* Soft warm border */
-  --border-light: #ded5c8;     /* Clean warm border */
-  --border-focus: #18181b;     /* Deep charcoal focus */
+  --border-subtle: #EAE0F5;     /* Soft lavender border */
+  --border-light: #DFCDEC;      /* Clean pastel border */
+  --border-accent: #D8B4FE;     /* Lavender outline accent */
+  --border-focus: #9333EA;      /* Vibrant purple focus */
 
-  --text-main: #18181b;        /* Deep charcoal / pitch black */
-  --text-muted: #6b655f;       /* Warm muted slate/taupe */
-  --text-dim: #948b83;         /* Muted sand */
-  --text-bright: #09090b;
+  --text-main: #1D1527;         /* Deep obsidian violet for high contrast */
+  --text-muted: #645674;        /* Elegant lavender-tinted charcoal */
+  --text-dim: #9787AA;          /* Soft lavender grey */
+  --text-bright: #0F0917;
 
-  --accent-taupe: #a59281;     /* Warm Taupe from MERN STACK banner text */
-  --accent-taupe-dark: #8c7867;
-  --accent-black: #12111a;     /* Deep dark navy/black for "Get in touch" */
-  --accent-emerald: #16a34a;   /* Online green */
+  --accent-lavender: #9333EA;    /* Royal purple */
+  --accent-lavender-soft: #A855F7;
+  --accent-lavender-light: #E9D5FF;
+  --accent-pink: #EC4899;        /* Rose pink accent */
+  --accent-pink-soft: #F472B6;
+  --accent-pink-light: #FCE7F3;
+  --accent-gradient: linear-gradient(135deg, #9333EA 0%, #C084FC 45%, #EC4899 100%);
+
+  --accent-emerald: #16A34A;    /* Availability badge green */
   --accent-emerald-bg: rgba(22, 163, 74, 0.08);
 
-  --shadow-sm: 0 2px 8px rgba(28, 25, 23, 0.04);
-  --shadow-md: 0 6px 20px rgba(28, 25, 23, 0.06);
-  --shadow-lg: 0 16px 40px rgba(28, 25, 23, 0.08);
+  --shadow-sm: 0 2px 10px rgba(147, 51, 234, 0.04);
+  --shadow-md: 0 8px 24px rgba(147, 51, 234, 0.07);
+  --shadow-lg: 0 20px 48px rgba(147, 51, 234, 0.09), 0 4px 12px rgba(236, 72, 153, 0.05);
 
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-heading: 'Outfit', sans-serif;
+  --font-display: 'Bebas Neue', 'Outfit', sans-serif;
+  --font-script: 'Caveat', cursive;
   --font-mono: 'Fira Code', monospace;
 
   --radius-sm: 8px;
@@ -82,17 +91,17 @@ body {
   background: var(--bg-primary);
 }
 ::-webkit-scrollbar-thumb {
-  background: #ded5c8;
+  background: #D8B4FE;
   border-radius: var(--radius-full);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-taupe);
+  background: var(--accent-lavender);
 }
 
 /* Selection */
 ::selection {
-  background: #faf0e7;
-  color: #18181b;
+  background: #F3E8FF;
+  color: #1D1527;
 }
 
 /* Typography Helpers */
@@ -202,15 +211,17 @@ button {
 
 /* Text Accent Utilities */
 .text-gradient {
-  color: var(--accent-taupe);
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-purple {
-  color: var(--accent-taupe-dark);
+  color: var(--accent-lavender);
 }
 
 .text-gradient-cyan {
-  color: var(--text-main);
+  color: var(--accent-pink);
 }
 
 /* Card System */
@@ -247,30 +258,30 @@ button {
 }
 
 .btn-primary {
-  background: var(--accent-black);
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(18, 17, 26, 0.15);
+  background: #1D1527;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(29, 21, 39, 0.18);
 }
 
 .btn-primary:hover {
-  background: #2a2838;
-  box-shadow: 0 6px 20px rgba(18, 17, 26, 0.25);
+  background: #361F4D;
+  box-shadow: 0 6px 20px rgba(147, 51, 234, 0.25);
   transform: translateY(-2px);
-  color: #ffffff;
+  color: #FFFFFF;
 }
 
 .btn-secondary {
-  background: #ffffff;
+  background: #FFFFFF;
   color: var(--text-main);
   border: 1px solid var(--border-light);
   box-shadow: var(--shadow-sm);
 }
 
 .btn-secondary:hover {
-  background: var(--bg-secondary);
-  border-color: var(--text-main);
+  background: #FAF7FC;
+  border-color: var(--accent-lavender);
+  color: var(--accent-lavender);
   transform: translateY(-2px);
-  color: var(--text-main);
 }
 
 .btn-outline-glow {

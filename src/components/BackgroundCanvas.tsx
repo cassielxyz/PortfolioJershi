@@ -35,10 +35,10 @@ export const BackgroundCanvas: React.FC = () => {
     }[] = [];
 
     const colors = [
-      '165, 146, 129', // Warm Taupe
-      '214, 205, 196', // Sand
-      '180, 168, 155', // Khaki
-      '140, 130, 122'  // Muted Taupe
+      '168, 85, 247', // Soft Lavender
+      '236, 72, 153', // Rose Pink
+      '192, 132, 252', // Lilac
+      '244, 114, 182'  // Blush
     ];
 
     for (let i = 0; i < particleCount; i++) {

@@ -6,16 +6,17 @@
       "path": "c:\\Users\\jesow\\Downloads\\portfolio\\README.md",
       "pinnedBy": "auto:spec",
       "note": "Project README",
-      "pinnedAt": 1793466243250,
+      "pinnedAt": 1793466297495,
       "auto": "spec",
       "role": "spec"
     },
     {
       "path": "c:\\Users\\jesow\\Documents\\github projects\\jershika portfolio\\README.md",
-      "pinnedBy": "auto:spec",
+      "pinnedBy": "auto:editor",
       "note": "Project README",
-      "pinnedAt": 1793466243250,
+      "pinnedAt": 1793466624610,
       "auto": "spec",
+      "expiresAt": 1793470224610,
       "role": "spec"
     }
   ],
@@ -1583,5 +1584,5 @@
       "updatedAt": 1793464989675
     }
   ],
-  "updatedAt": 1793466243250
+  "updatedAt": 1793466624610
 }

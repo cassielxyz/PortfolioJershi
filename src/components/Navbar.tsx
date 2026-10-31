@@ -171,9 +171,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenResumeModal }) => {
               width: '40px',
               height: '40px',
               borderRadius: '50%',
-              border: '1px solid var(--border-light)',
-              background: liked ? '#fee2e2' : '#ffffff',
-              color: liked ? '#ef4444' : '#18181b',
+              border: '1px solid #DFCDEC',
+              background: liked ? '#FCE7F3' : '#FFFFFF',
+              color: liked ? '#EC4899' : '#1D1527',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -182,7 +182,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenResumeModal }) => {
             title={`Appreciate profile (${likeCount})`}
             aria-label="Like"
           >
-            <Heart size={18} fill={liked ? '#ef4444' : 'none'} />
+            <Heart size={18} fill={liked ? '#EC4899' : 'none'} />
           </button>
 
           {/* Bookmark / Resume Download Button */}
@@ -193,9 +193,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenResumeModal }) => {
               width: '40px',
               height: '40px',
               borderRadius: '50%',
-              border: '1px solid var(--border-light)',
-              background: '#ffffff',
-              color: '#18181b',
+              border: '1px solid #DFCDEC',
+              background: '#FFFFFF',
+              color: '#1D1527',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -207,7 +207,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenResumeModal }) => {
             <Bookmark size={18} />
           </button>
 
-          {/* Solid Black "Get in touch" Pill Button */}
+          {/* Solid "Get in touch" Pill Button */}
           <a
             href="#contact"
             className="btn btn-primary"
@@ -215,10 +215,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenResumeModal }) => {
               padding: '0.65rem 1.45rem',
               fontSize: '0.875rem',
               fontWeight: 700,
-              background: '#12111a',
-              color: '#ffffff',
+              background: '#1D1527',
+              color: '#FFFFFF',
               borderRadius: '9999px',
-              boxShadow: '0 4px 14px rgba(18, 17, 26, 0.15)',
+              boxShadow: '0 4px 14px rgba(29, 21, 39, 0.18)',
               textDecoration: 'none'
             }}
           >
