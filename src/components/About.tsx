@@ -27,7 +27,7 @@ export const About: React.FC = () => {
             <span>Profile & Background</span>
           </div>
           <h2 className="section-title">
-            Engineering with <span style={{ color: 'var(--accent-taupe)' }}>Precision & Passion</span>
+            Engineering with <span style={{ color: '#9333EA' }}>Precision & Passion</span>
           </h2>
           <p className="section-subtitle">
             An Honors Computer Science Engineer blending resilient Java enterprise backends with intuitive, high-performance web applications.
@@ -51,7 +51,7 @@ export const About: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.55, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              whileHover={{ y: -5, boxShadow: '0 12px 30px rgba(28, 25, 23, 0.08)' }}
+              whileHover={{ y: -5, boxShadow: '0 12px 30px rgba(147, 51, 234, 0.08)' }}
               style={{
                 padding: '1.75rem 1.5rem',
                 textAlign: 'center',
@@ -60,7 +60,7 @@ export const About: React.FC = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 background: '#ffffff',
-                border: '1px solid var(--border-subtle)'
+                border: '1px solid #EAE0F5'
               }}
             >
               <div
@@ -73,11 +73,11 @@ export const About: React.FC = () => {
                   display: 'flex',
                   alignItems: 'baseline',
                   justifyContent: 'center',
-                  color: 'var(--accent-taupe-dark)'
+                  color: '#9333EA'
                 }}
               >
                 <span>{stat.value}</span>
-                <span style={{ fontSize: '1.4rem', color: 'var(--accent-taupe)', marginLeft: '2px' }}>{stat.suffix}</span>
+                <span style={{ fontSize: '1.4rem', color: '#EC4899', marginLeft: '2px' }}>{stat.suffix}</span>
               </div>
               <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-main)', marginBottom: '0.35rem' }}>
                 {stat.label}

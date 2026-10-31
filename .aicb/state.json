@@ -18,6 +18,13 @@
       "auto": "spec",
       "expiresAt": 1793470224610,
       "role": "spec"
+    },
+    {
+      "path": "c:\\Users\\jesow\\Documents\\github projects\\jershika portfolio\\src\\data\\portfolioData.ts",
+      "pinnedBy": "auto:editor",
+      "pinnedAt": 1793468265181,
+      "auto": "dwell",
+      "expiresAt": 1793471865181
     }
   ],
   "skills": [
@@ -1584,5 +1591,5 @@
       "updatedAt": 1793464989675
     }
   ],
-  "updatedAt": 1793466624610
+  "updatedAt": 1793468265181
 }

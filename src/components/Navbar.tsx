@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Heart, Bookmark, FileDown } from 'lucide-react';
+import { Menu, X, FileDown, ArrowUpRight, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface NavbarProps {
   onOpenResumeModal: () => void;
@@ -9,13 +10,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenResumeModal }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(48);
 
   const navLinks = [
     { label: 'About', href: '#about' },
-    { label: 'Skills', href: '#skills' },
     { label: 'Experience', href: '#experience' },
+    { label: 'Skills', href: '#skills' },
     { label: 'Projects', href: '#projects' },
     { label: 'Education', href: '#education' },
     { label: 'Contact', href: '#contact' }
@@ -25,9 +24,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenResumeModal }) => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
 
-      // Detect active section
-      const sections = ['hero', 'about', 'skills', 'experience', 'projects', 'education', 'contact'];
-      const scrollPos = window.scrollY + 200;
+      const sections = ['hero', 'about', 'experience', 'skills', 'projects', 'education', 'contact'];
+      const scrollPos = window.scrollY + 220;
 
       for (const section of sections) {
         const el = document.getElementById(section);
@@ -46,16 +44,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenResumeModal }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLike = () => {
-    if (!liked) {
-      setLiked(true);
-      setLikeCount((prev) => prev + 1);
-    } else {
-      setLiked(false);
-      setLikeCount((prev) => prev - 1);
-    }
-  };
-
   return (
     <header
       style={{
@@ -64,76 +52,103 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenResumeModal }) => {
         left: 0,
         right: 0,
         zIndex: 100,
-        transition: 'all 0.25s ease',
-        background: isScrolled ? 'rgba(255, 255, 255, 0.95)' : '#ffffff',
+        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        background: isScrolled
+          ? 'rgba(250, 247, 252, 0.92)'
+          : 'rgba(250, 247, 252, 0.75)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
-        borderBottom: '1px solid var(--border-subtle)',
-        boxShadow: isScrolled ? '0 4px 20px rgba(0, 0, 0, 0.04)' : 'none'
+        borderBottom: '1px solid rgba(234, 224, 245, 0.75)',
+        boxShadow: isScrolled ? '0 4px 20px rgba(147, 51, 234, 0.04)' : 'none'
       }}
     >
-      <div className="content-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '4.75rem' }}>
-        
-        {/* Left: Avatar & Profile Info (Matches theme screenshot) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-          <a href="#hero" style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', textDecoration: 'none' }}>
-            <div
+      <div
+        className="content-wrapper"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          height: '4.5rem'
+        }}
+      >
+        {/* Left: Brand / Monogram & Status */}
+        <a
+          href="#hero"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            textDecoration: 'none'
+          }}
+        >
+          {/* Chic Monogram Circle */}
+          <div
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #9333EA 0%, #EC4899 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#FFFFFF',
+              fontWeight: 800,
+              fontSize: '0.85rem',
+              letterSpacing: '-0.02em',
+              boxShadow: '0 4px 12px rgba(147, 51, 234, 0.25)'
+            }}
+          >
+            JC
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span
               style={{
-                position: 'relative',
-                width: '42px',
-                height: '42px',
-                borderRadius: '50%',
-                flexShrink: 0
+                fontFamily: 'var(--font-heading)',
+                fontWeight: 800,
+                fontSize: '1.05rem',
+                color: '#1D1527',
+                letterSpacing: '-0.02em',
+                lineHeight: 1.2
               }}
             >
-              <img
-                src="/profile.jpg"
-                alt="Jershika C"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  borderRadius: '50%',
-                  objectFit: 'cover'
-                }}
-              />
+              Jershika C<span style={{ color: '#9333EA' }}>.</span>
+            </span>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                fontSize: '0.75rem',
+                color: '#15803D',
+                fontWeight: 600
+              }}
+            >
               <span
                 style={{
-                  position: 'absolute',
-                  bottom: '1px',
-                  right: '1px',
-                  width: '10px',
-                  height: '10px',
+                  width: '6px',
+                  height: '6px',
                   borderRadius: '50%',
-                  background: '#16a34a',
-                  border: '2px solid #ffffff'
+                  background: '#16A34A',
+                  boxShadow: '0 0 6px rgba(22, 163, 74, 0.6)'
                 }}
-                title="Available for work"
               />
+              <span>Available for Roles</span>
             </div>
-            
-            <div>
-              <div style={{ fontWeight: 800, fontSize: '1rem', color: '#18181b', lineHeight: 1.25, letterSpacing: '-0.02em' }}>
-                Jershika C
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.785rem' }}>
-                <span style={{ color: '#16a34a', fontWeight: 600 }}>Available for work</span>
-               
-              
-              </div>
-            </div>
-          </a>
-        </div>
+          </div>
+        </a>
 
-        {/* Center: Desktop Navigation Links */}
+        {/* Center: Minimalist Lavender Nav Pills */}
         <nav
           style={{
             display: 'none',
             alignItems: 'center',
-            gap: '0.35rem',
-            background: 'var(--bg-secondary)',
-            padding: '0.3rem 0.5rem',
+            gap: '0.25rem',
+            background: 'rgba(255, 255, 255, 0.85)',
+            padding: '0.35rem 0.65rem',
             borderRadius: '9999px',
-            border: '1px solid var(--border-subtle)'
+            border: '1px solid #EAE0F5',
+            boxShadow: '0 2px 8px rgba(147, 51, 234, 0.03)'
           }}
           className="desktop-nav"
         >
@@ -146,11 +161,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenResumeModal }) => {
                 style={{
                   padding: '0.45rem 1.05rem',
                   borderRadius: '9999px',
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  color: isActive ? '#18181b' : '#6b655f',
-                  background: isActive ? '#ffffff' : 'transparent',
-                  boxShadow: isActive ? '0 2px 6px rgba(0, 0, 0, 0.05)' : 'none',
+                  fontSize: '0.865rem',
+                  fontWeight: isActive ? 700 : 500,
+                  color: isActive ? '#9333EA' : '#645674',
+                  background: isActive ? '#F3E8FF' : 'transparent',
                   transition: 'all 0.2s ease',
                   textDecoration: 'none'
                 }}
@@ -161,84 +175,72 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenResumeModal }) => {
           })}
         </nav>
 
-        {/* Right: Actions CTA (Heart, Bookmark, and "Get in touch" pill button) */}
-        <div style={{ display: 'none', alignItems: 'center', gap: '0.65rem' }} className="desktop-nav">
-          {/* Like / Heart Icon Button */}
-          <button
-            onClick={handleLike}
-            className="interactive"
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              border: '1px solid #DFCDEC',
-              background: liked ? '#FCE7F3' : '#FFFFFF',
-              color: liked ? '#EC4899' : '#1D1527',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s ease'
-            }}
-            title={`Appreciate profile (${likeCount})`}
-            aria-label="Like"
-          >
-            <Heart size={18} fill={liked ? '#EC4899' : 'none'} />
-          </button>
-
-          {/* Bookmark / Resume Download Button */}
+        {/* Right: Clean Action Buttons (Resume & Get In Touch) */}
+        <div
+          style={{ display: 'none', alignItems: 'center', gap: '0.75rem' }}
+          className="desktop-nav"
+        >
+          {/* Minimal Resume Download Button */}
           <button
             onClick={onOpenResumeModal}
             className="interactive"
             style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.45rem',
+              padding: '0.55rem 1.15rem',
+              borderRadius: '9999px',
               border: '1px solid #DFCDEC',
               background: '#FFFFFF',
               color: '#1D1527',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s ease'
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              boxShadow: '0 2px 6px rgba(147, 51, 234, 0.03)',
+              transition: 'all 0.2s ease',
+              cursor: 'pointer'
             }}
-            title="Save / View Resume"
-            aria-label="Resume"
           >
-            <Bookmark size={18} />
+            <FileDown size={15} color="#9333EA" />
+            <span>Resume</span>
           </button>
 
-          {/* Solid "Get in touch" Pill Button */}
+          {/* Solid Dark Violet "Get in touch" Pill */}
           <a
             href="#contact"
-            className="btn btn-primary"
             style={{
-              padding: '0.65rem 1.45rem',
-              fontSize: '0.875rem',
-              fontWeight: 700,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.45rem',
+              padding: '0.6rem 1.35rem',
+              borderRadius: '9999px',
               background: '#1D1527',
               color: '#FFFFFF',
-              borderRadius: '9999px',
+              fontSize: '0.85rem',
+              fontWeight: 700,
+              letterSpacing: '-0.01em',
               boxShadow: '0 4px 14px rgba(29, 21, 39, 0.18)',
-              textDecoration: 'none'
+              textDecoration: 'none',
+              transition: 'all 0.2s ease'
             }}
           >
-            Get in touch
+            <span>Get in touch</span>
+            <ArrowUpRight size={14} />
           </a>
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Hamburger Toggle */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '2.6rem',
-            height: '2.6rem',
+            width: '2.5rem',
+            height: '2.5rem',
             borderRadius: '0.65rem',
-            background: 'var(--bg-secondary)',
-            border: '1px solid var(--border-subtle)',
-            color: '#18181b'
+            background: '#FFFFFF',
+            border: '1px solid #EAE0F5',
+            color: '#1D1527'
           }}
           className="mobile-toggle"
           aria-label="Toggle Navigation"
@@ -247,63 +249,102 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenResumeModal }) => {
         </button>
       </div>
 
-      {/* Mobile Menu Drawer */}
-      {mobileMenuOpen && (
-        <div
-          style={{
-            background: '#ffffff',
-            borderBottom: '1px solid var(--border-subtle)',
-            padding: '1.5rem',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.85rem'
-          }}
-        >
-          {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                padding: '0.75rem 1rem',
-                borderRadius: '0.5rem',
-                fontSize: '1rem',
-                fontWeight: 600,
-                color: activeSection === link.href.replace('#', '') ? '#18181b' : '#6b655f',
-                background: activeSection === link.href.replace('#', '') ? '#faf0e7' : 'transparent',
-                display: 'block'
-              }}
-            >
-              {link.label}
-            </a>
-          ))}
-          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenResumeModal();
-              }}
-              className="btn btn-secondary"
-              style={{ flex: 1, padding: '0.75rem', fontSize: '0.9rem' }}
-            >
-              <FileDown size={16} /> Resume
-            </button>
-            <a
-              href="#contact"
-              onClick={() => setMobileMenuOpen(false)}
-              className="btn btn-primary"
-              style={{ flex: 1, padding: '0.75rem', fontSize: '0.9rem' }}
-            >
-              Get in touch
-            </a>
-          </div>
-        </div>
-      )}
+      {/* Mobile Menu Dropdown */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25 }}
+            style={{
+              background: '#FAF7FC',
+              borderBottom: '1px solid #EAE0F5',
+              padding: '1.25rem 1.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.65rem'
+            }}
+          >
+            {navLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  padding: '0.65rem 1rem',
+                  borderRadius: '12px',
+                  fontSize: '0.95rem',
+                  fontWeight: 600,
+                  color: activeSection === link.href.replace('#', '') ? '#9333EA' : '#1D1527',
+                  background: activeSection === link.href.replace('#', '') ? '#F3E8FF' : '#FFFFFF',
+                  textDecoration: 'none',
+                  border: '1px solid #EAE0F5'
+                }}
+              >
+                {link.label}
+              </a>
+            ))}
+
+            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenResumeModal();
+                }}
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.45rem',
+                  padding: '0.75rem',
+                  borderRadius: '9999px',
+                  border: '1px solid #DFCDEC',
+                  background: '#FFFFFF',
+                  color: '#1D1527',
+                  fontWeight: 600,
+                  fontSize: '0.9rem'
+                }}
+              >
+                <FileDown size={16} />
+                <span>Resume</span>
+              </button>
+
+              <a
+                href="#contact"
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.45rem',
+                  padding: '0.75rem',
+                  borderRadius: '9999px',
+                  background: '#1D1527',
+                  color: '#FFFFFF',
+                  fontWeight: 700,
+                  fontSize: '0.9rem',
+                  textDecoration: 'none'
+                }}
+              >
+                <span>Get in touch</span>
+                <ArrowUpRight size={15} />
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <style>{`
-        @media (min-width: 900px) {
-          .desktop-nav { display: flex !important; }
-          .mobile-toggle { display: none !important; }
+        @media (min-width: 860px) {
+          .desktop-nav {
+            display: flex !important;
+          }
+          .mobile-toggle {
+            display: none !important;
+          }
         }
       `}</style>
     </header>
