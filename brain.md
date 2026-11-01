@@ -581,6 +581,8 @@ A modern, high-performance portfolio for **Jershika C**, an Honors Computer Scie
      - Clicking the preview opens the live site or repository directly in a new tab.
      - Bottom thumbnail selector strip (Node 01 to 04) for direct jumping.
      - Descriptions are kept short, simple, and punchy.
-  5. **Verification**:
+  5. **Verification & Repository Push**:
      - `npm run build` passed with exit code 0 (`tsc -b && vite build`).
      - Dev server active at `http://localhost:5173/`.
+     - Pushed to `https://github.com/cassielxyz/PortfolioJershi` (`main` branch and `v1.0.0-sections-1-2-3-locked` tag).
+     - Both `jershika.png` and `public/jershika.png` are tracked and pushed. External reference folder (`c:\Users\jesow\Downloads\portfolio`) is excluded.
