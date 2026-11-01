@@ -586,3 +586,32 @@ A modern, high-performance portfolio for **Jershika C**, an Honors Computer Scie
      - Dev server active at `http://localhost:5173/`.
      - Pushed to `https://github.com/cassielxyz/PortfolioJershi` (`main` branch and `v1.0.0-sections-1-2-3-locked` tag).
      - Both `jershika.png` and `public/jershika.png` are tracked and pushed. External reference folder (`c:\Users\jesow\Downloads\portfolio`) is excluded.
+
+
+---
+
+### #27. Connected Nodes Circuit, Custom Serif Favicon, Education & Luxury Diploma Certificate Showcase
+- **Date**: 2026-11-02
+- **Driver**: User requested removing the 3D tree component, making the list of projects connected nodes on a line with an active dot beside the selected node, creating a favicon with letter `J.` and title `Jershixz`, and redesigning the Education and Certification sections matching the Black, Ash, White, minimal pinkish-lavender theme with Certifications styled as an authentic luxury diploma certificate with serif typography.
+- **Deliverables & Architectural Decisions**:
+  1. **Connected Nodes Project Circuit (`src/components/Projects.tsx`)**:
+     - Removed the 3D Tree canvas element.
+     - Implemented a clean, responsive vertical connected nodes circuit line where the 4 verified projects are linked along a continuous rail.
+     - Clicking or selecting each node positions an animated lavender focus dot directly beside the active node.
+     - Right split stage showcases the interactive macOS browser frame (clickable to launch live URLs), "Visit Project ↗" button, and GitHub button with official SVG icon.
+     - Preserved exact heading typography: `"Engineered Systems & Production Builds."`.
+  2. **Custom Serif Favicon & Page Title**:
+     - Created `public/favicon.svg` featuring a dark rounded squircle (`#181622`) and bold white serif `J.` matching the reference screenshot.
+     - Updated `index.html` document title to `<title>Jershixz</title>`.
+  3. **Education Section (`src/components/Education.tsx`)**:
+     - Redesigned with Black, Ash, White, and whisper pinkish-lavender liquid glass cards.
+     - Features Ponjesly College of Engineering (B.E. Honors, 8.51 CGPA), Higher Secondary (HSC 73.17%), and Secondary School (SSLC 74.6%).
+  4. **Luxury Diploma Certificate Section (`src/components/Certifications.tsx`)**:
+     - Re-architected as an authentic archival diploma certificate with guilloche styling, double hairline security borders, corner flourishes, and embossed medallion foil seal.
+     - Styled with `Bodoni Moda` and `Instrument Serif` italic fonts loaded via Google Fonts.
+     - Authenticates Jershika C's Full Stack Web Development & Java Intensive Course credential with accredited verification details and digital signature block.
+  5. **Viewport Overflow & Scrollbar Fix (`src/index.css`)**:
+     - Added `overflow-x: hidden; max-width: 100vw;` to `html, body` and constrained `::-webkit-scrollbar` height to eliminate unwanted horizontal scrollbar strips.
+  6. **Verification**:
+     - `npm run build` passed with exit code 0 (`tsc -b && vite build`).
+     - Dev server active at `http://localhost:5173/`.
