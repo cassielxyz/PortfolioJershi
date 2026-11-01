@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# User reference & cache
+reference/
+reference.*
+.aicb/
+*.txt
+/jershika.png
