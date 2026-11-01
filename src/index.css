@@ -5,6 +5,7 @@
    ========================================================================== */
 
 :root {
+  --foreground: #1D1527;        /* Core foreground tone for dynamic cursor & contrast */
   /* Minimal Lavender Pink Palette */
   --bg-primary: #FAF7FC;        /* Ethereal clean porcelain lavender */
   --bg-secondary: #F4ECF9;      /* Delicate lavender blush */
@@ -396,69 +397,59 @@ button {
   animation: pulseGlow 3s ease-in-out infinite;
 }
 
-/* Subtle Custom Desktop Cursor (Precision & Non-obtrusive) */
-@media (pointer: fine) {
-  body, a, button, input, textarea, select, label, .interactive {
-    cursor: none !important;
-  }
+/* ==========================================================================
+   Exact Daniel Ingrassia Cursor System (https://ingrassiadaniel.it/)
+   ========================================================================== */
+.has-custom-cursor,
+.has-custom-cursor * {
+  cursor: none !important;
 }
 
-.subtle-cursor-dot {
+.custom-cursor {
+  z-index: 100000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   position: fixed;
   top: 0;
   left: 0;
-  width: 7px;
-  height: 7px;
-  background: #18181b;
-  border-radius: 50%;
+}
+
+.custom-cursor[data-visible="true"] {
+  opacity: 1;
+}
+
+.custom-cursor-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
   pointer-events: none;
-  z-index: 10000;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  transition: width 0.2s ease, height 0.2s ease, background 0.2s ease;
+}
+
+.custom-cursor-head {
+  --s: 8px;
+  width: var(--s);
+  height: var(--s);
+  margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+  background: var(--foreground, #1D1527);
+  box-shadow: 0 0 10px 2px rgba(29, 21, 39, 0.4);
   will-change: transform;
-}
-
-.subtle-cursor-dot.hover {
-  width: 5px;
-  height: 5px;
-  background: var(--accent-taupe-dark);
-}
-
-.subtle-cursor-ring {
-  position: fixed;
+  border-radius: 50%;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              margin 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: absolute;
   top: 0;
   left: 0;
-  width: 30px;
-  height: 30px;
-  border: 1.5px solid rgba(165, 146, 129, 0.45);
-  border-radius: 50%;
   pointer-events: none;
-  z-index: 9999;
+}
+
+.custom-cursor[data-hover="true"] .custom-cursor-head {
+  --s: 40px;
+  box-shadow: inset 0 0 0 1.5px var(--foreground, #1D1527);
   background: transparent;
-  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              height 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.25s ease,
-              background-color 0.25s ease;
-  will-change: transform;
-}
-
-.subtle-cursor-ring.hover {
-  width: 44px;
-  height: 44px;
-  border-color: var(--accent-taupe);
-  background: rgba(165, 146, 129, 0.06);
-}
-
-.subtle-cursor-ring.clicked {
-  width: 24px;
-  height: 24px;
-  border-color: #18181b;
-}
-
-@media (pointer: coarse) {
-  .subtle-cursor-dot, .subtle-cursor-ring {
-    display: none !important;
-  }
 }
 
 /* Accessibility: Respect Reduced Motion Preference */
