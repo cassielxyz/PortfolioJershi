@@ -1,997 +1,1101 @@
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { 
-  Briefcase, 
   Calendar, 
   MapPin, 
-  CheckCircle2, 
-  Building2,
-  Sparkles,
-  Layers,
-  ChevronDown,
-  Terminal,
-  Cpu,
-  ArrowUpRight
+  Sparkles
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { experiences } from '../data/portfolioData';
 import { TechLogo } from './TechLogos';
 
-type FilterType = 'all' | 'professional' | 'internship';
+interface StoryChapter {
+  id: string;
+  year: string;
+  when: string;
+  role: string;
+  company: string;
+  location: string;
+  type: string;
+  highlightBadge: string;
+  isCurrent?: boolean;
+  accentColor?: string;
+  responsibilities: string[];
+  keyDeliverable: string;
+  outcomeMetric: string;
+  techStack: string[];
+}
+
+const STORY_CHAPTERS: StoryChapter[] = [
+  {
+    id: "exp-imperial",
+    year: "2026",
+    when: "Aug 2026 — Present",
+    role: "Full Stack Developer",
+    company: "Imperial Info System",
+    location: "Chennai, Tamil Nadu",
+    type: "Enterprise Role",
+    highlightBadge: "Current Role",
+    isCurrent: true,
+    accentColor: "#10B981", // active emerald
+    responsibilities: [
+      "Engineered high-performance enterprise interface modules in React.js with modular component design and zero-regression state management.",
+      "Integrated microservice REST APIs with robust error boundaries, request throttling, and optimistic client-side cache layers.",
+      "Spearheaded UI design-to-code implementations with fluid spring physics, accessible keyboard navigation, and pixel-perfect design fidelity."
+    ],
+    outcomeMetric: "Lighthouse 98+ Score & Accelerated Release Cycles",
+    keyDeliverable: "Enterprise Client Portal Suite & Scalable UI Foundation",
+    techStack: ["React.js", "TypeScript", "REST APIs", "Modern Frontend UI", "Full Stack Workflow"]
+  },
+  {
+    id: "exp-agile",
+    year: "2025",
+    when: "June 2025 — July 2025",
+    role: "Python Full Stack Intern",
+    company: "Agile Infotech",
+    location: "Kerala, India",
+    type: "Internship",
+    highlightBadge: "3 Full Stack Apps",
+    isCurrent: false,
+    accentColor: "#F5D0FE", // whisper lavender
+    responsibilities: [
+      "Built three production-ready Python web applications integrating asynchronous request flows and MongoDB document persistence.",
+      "Created resilient backend validation pipelines ensuring data integrity across high-frequency transactional payloads.",
+      "Participated in agile sprints, code reviews, and schema indexing optimizations for fast sub-50ms query turnaround."
+    ],
+    outcomeMetric: "Sub-50ms MongoDB Query Turnaround",
+    keyDeliverable: "3 Production-Grade Python & MongoDB Web Applications",
+    techStack: ["Python", "MongoDB", "Backend Architecture", "Full Stack Integration", "REST APIs"]
+  },
+  {
+    id: "exp-ak",
+    year: "2025",
+    when: "Feb 2025 — Feb 20, 2025",
+    role: "Full Stack Web Development Intern",
+    company: "Ak Info Park",
+    location: "Kanyakumari, Tamil Nadu",
+    type: "Internship",
+    highlightBadge: "15% Latency Boost",
+    isCurrent: false,
+    accentColor: "#C084FC", // soft violet
+    responsibilities: [
+      "Engineered five responsive web interfaces using semantic HTML5, modern CSS3 animations, and reactive vanilla JavaScript.",
+      "Diagnosed and eliminated redundant network calls, reducing client-server data exchange latency by 15%.",
+      "Standardized mobile-first breakpoint logic ensuring flawless cross-device layout consistency."
+    ],
+    outcomeMetric: "15% Latency Reduction Across Endpoints",
+    keyDeliverable: "5 High-Speed Responsive Web Properties & 15% Latency Optimization",
+    techStack: ["HTML5", "CSS3", "JavaScript", "REST APIs", "Performance Tuning"]
+  },
+  {
+    id: "exp-srishti",
+    year: "2024",
+    when: "Feb 2024 — Mar 2024",
+    role: "Python & Data Analysis Intern",
+    company: "Srishti Innovative Computer Systems",
+    location: "Kerala, India",
+    type: "Internship",
+    highlightBadge: "Visual Analytics",
+    isCurrent: false,
+    accentColor: "#8E8B99", // refined ash
+    responsibilities: [
+      "Ingested, sanitized, and transformed three multi-variate datasets using Python and scientific computing libraries.",
+      "Generated analytical reporting dashboards and visual trend plots translating complex raw metrics into strategic takeaways.",
+      "Documented statistical modeling methodologies and reproducible data processing pipelines."
+    ],
+    outcomeMetric: "Zero Data Loss Across 3 Multi-Variate Datasets",
+    keyDeliverable: "Automated Data Analytics Pipeline & Visual Reports",
+    techStack: ["Python", "Data Analysis", "Data Cleaning", "Data Visualization", "Pandas", "Matplotlib"]
+  }
+];
 
 export const Experience: React.FC = () => {
-  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
-  const [hoveredExpId, setHoveredExpId] = useState<string | null>(null);
-  const [expandedDrawers, setExpandedDrawers] = useState<Record<string, boolean>>({
-    'exp-imperial': true // Default open the current role for rich presentation
-  });
+  const sectionRef = useRef<HTMLElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLOListElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const railRef = useRef<HTMLSpanElement>(null);
+  const tailRef = useRef<HTMLSpanElement>(null);
 
-  const toggleDrawer = (id: string) => {
-    setExpandedDrawers(prev => ({
-      ...prev,
-      [id]: !prev[id]
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [scrollProgress, setScrollProgress] = useState<number>(0);
+
+  const activeChapter = STORY_CHAPTERS[activeIndex] || STORY_CHAPTERS[0];
+  const yearDigits = activeChapter.year.split(""); // e.g. ["2", "0", "2", "6"]
+
+  // -------------------------------------------------------------
+  // CANVAS: 3D Rotating Chrono Tunnel (Reverse-engineered from Rishi Thakor)
+  // -------------------------------------------------------------
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animId: number;
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+
+    const resize = () => {
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      width = canvas.clientWidth;
+      height = canvas.clientHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const RINGS = 14;
+    const GAP = 320;
+    const FOCAL = 500;
+    const R = 580;
+    const TICKS = 48;
+    const dust = Array.from({ length: 65 }, () => ({
+      a: Math.random() * Math.PI * 2,
+      r: 100 + Math.random() * 700,
+      z: Math.random() * RINGS * GAP,
+      s: 0.5 + Math.random() * 1.5
     }));
-  };
 
-  const filteredExperiences = experiences.filter((exp) => {
-    if (activeFilter === 'all') return true;
-    if (activeFilter === 'professional') return exp.isCurrent || exp.type.toLowerCase().includes('professional');
-    if (activeFilter === 'internship') return exp.type.toLowerCase().includes('internship');
-    return true;
-  });
+    let startTime = performance.now();
+
+    const render = () => {
+      const now = (performance.now() - startTime) * 0.001;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+
+      const cx = width * 0.5;
+      const cy = height * 0.52;
+      const k = Math.min(width, height) / 850;
+      const p = scrollProgress;
+
+      const camZ = p * (STORY_CHAPTERS.length - 1) * GAP * 1.5 + now * 14;
+      const spin = -p * Math.PI * 1.4 - now * 0.018;
+      const len = RINGS * GAP;
+
+      ctx.lineCap = 'round';
+
+      // Dial rings
+      for (let i = 0; i < RINGS; i++) {
+        const z = ((i * GAP - camZ) % len + len) % len + 50;
+        const s = (FOCAL / z) * k;
+        const fog = Math.min(1, Math.max(0, (z - 240) / 1000)) * Math.max(0, 1 - z / len);
+        if (fog <= 0.01) continue;
+
+        const rr = R * s;
+        const rot = spin + i * 0.22;
+
+        // Outer Ring
+        ctx.strokeStyle = `rgba(38, 36, 46, ${(fog * 0.09).toFixed(3)})`;
+        ctx.lineWidth = Math.max(0.6, 1.1 * s);
+        ctx.beginPath();
+        ctx.arc(cx, cy, rr, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Clock Ticks
+        const T = width < 768 ? 24 : TICKS;
+        const every = T / 12;
+        for (const hour of [false, true]) {
+          const l = (hour ? 38 : 16) * s;
+          ctx.beginPath();
+          for (let j = 0; j < T; j++) {
+            if ((j % every === 0) !== hour) continue;
+            const a = rot + (j / T) * Math.PI * 2;
+            const c = Math.cos(a);
+            const d = Math.sin(a);
+            ctx.moveTo(cx + c * (rr - l), cy + d * (rr - l));
+            ctx.lineTo(cx + c * rr, cy + d * rr);
+          }
+          ctx.strokeStyle = hour 
+            ? `rgba(245, 208, 254, ${(fog * 0.28).toFixed(3)})` 
+            : `rgba(38, 36, 46, ${(fog * 0.11).toFixed(3)})`;
+          ctx.lineWidth = Math.max(0.5, (hour ? 2.4 : 1.2) * s);
+          ctx.stroke();
+        }
+
+        // Clock Hand
+        const ha = rot * 2.8 + i;
+        ctx.strokeStyle = `rgba(38, 36, 46, ${(fog * 0.12).toFixed(3)})`;
+        ctx.lineWidth = Math.max(0.5, 1.8 * s);
+        if (rr < Math.min(width, height) * 0.45) {
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(cx + Math.cos(ha) * rr * 0.5, cy + Math.sin(ha) * rr * 0.5);
+          ctx.stroke();
+        }
+      }
+
+      // Drifting Stardust
+      for (const q of dust) {
+        const z = ((q.z - camZ * 1.1) % len + len) % len + 35;
+        const s = (FOCAL / z) * k;
+        const fog = Math.min(1, Math.max(0, (z - 280) / 850)) * Math.max(0, 1 - z / len);
+        const a = q.a + spin * 0.25;
+        ctx.fillStyle = `rgba(245, 208, 254, ${(fog * 0.32).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(
+          cx + Math.cos(a) * q.r * s,
+          cy + Math.sin(a) * q.r * s,
+          Math.max(0.4, q.s * s * 2),
+          0,
+          Math.PI * 2
+        );
+        ctx.fill();
+      }
+
+      animId = requestAnimationFrame(render);
+    };
+
+    animId = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', resize);
+    };
+  }, [scrollProgress]);
+
+  // -------------------------------------------------------------
+  // NATURAL SCROLL LISTENER & TRACK POSITIONING (No Event Hijacking)
+  // -------------------------------------------------------------
+  const updateScroll = useCallback(() => {
+    const line = lineRef.current;
+    const list = listRef.current;
+    const rail = railRef.current;
+    const tail = tailRef.current;
+    if (!line || !list) return;
+
+    const chapters = list.querySelectorAll<HTMLElement>('.story__chapter-item');
+    if (!chapters.length) return;
+
+    const N = chapters.length;
+    const lr = line.getBoundingClientRect();
+    const mid = window.innerHeight * 0.5;
+
+    // First and last chapter marker coordinates relative to line
+    const firstChapter = chapters[0];
+    const lastChapter = chapters[N - 1];
+    const firstY = firstChapter.offsetTop + 32;
+    const endY = lastChapter.offsetTop + lastChapter.offsetHeight - 40;
+    const totalDist = Math.max(1, endY - firstY);
+
+    if (rail) {
+      rail.style.top = `${firstY}px`;
+      rail.style.height = `${totalDist}px`;
+    }
+
+    // Scroll progress p [0, 1]
+    const currentY = Math.min(endY, Math.max(firstY, mid - lr.top));
+    const p = Math.max(0, Math.min(1, (currentY - firstY) / totalDist));
+    setScrollProgress(p);
+
+    if (tail) {
+      tail.style.top = `${firstY}px`;
+      tail.style.height = `${currentY - firstY}px`;
+    }
+
+    // Determine active chapter based on midpoint
+    let activeIdx = 0;
+    chapters.forEach((c, i) => {
+      const cRect = c.getBoundingClientRect();
+      if (cRect.top < mid + 80) {
+        activeIdx = i;
+      }
+    });
+
+    setActiveIndex(activeIdx);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      requestAnimationFrame(updateScroll);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
+    
+    // Initial measurement
+    const timer = setTimeout(updateScroll, 100);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+      clearTimeout(timer);
+    };
+  }, [updateScroll]);
 
   return (
-    <section id="experience" className="experience-creative-section">
-      {/* Ambient Atmospheric Drift */}
-      <div className="experience-ambient-glow" aria-hidden="true" />
-
-      <div className="experience-content-wrapper">
-        
-        {/* =========================================================
-            EDITORIAL SECTION HEADER
-            ========================================================= */}
-        <motion.div
-          className="experience-header-lockup"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <div className="experience-mono-eyebrow">
-            <span className="eyebrow-index">03</span>
-            <span className="eyebrow-divider">/</span>
-            <span className="eyebrow-title">PROFESSIONAL TRAJECTORY & EXPERIENCE</span>
-          </div>
-
-          <h2 className="experience-headline">
-            Professional Experience <span className="headline-ampersand">&amp;</span>{' '}
-            <span className="headline-editorial-italic">Engineering Milestones</span>
-          </h2>
-
-          <p className="experience-subheadline">
-            Demonstrated engineering record across enterprise full-stack development, Python backend services,
-            microservice API integration, and verifiable performance optimizations.
-          </p>
-
-          {/* Apple Liquid Glass Segmented Control Dock */}
-          <div className="experience-filter-dock" role="tablist" aria-label="Filter career milestones">
-            {[
-              { id: 'all', label: 'All Milestones', count: experiences.length, icon: Layers },
-              { id: 'professional', label: 'Production & Enterprise', count: experiences.filter(e => e.isCurrent || e.type.toLowerCase().includes('professional')).length, icon: Sparkles },
-              { id: 'internship', label: 'Engineering Internships', count: experiences.filter(e => e.type.toLowerCase().includes('internship')).length, icon: Briefcase },
-            ].map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeFilter === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  role="tab"
-                  aria-selected={isActive}
-                  onClick={() => setActiveFilter(tab.id as FilterType)}
-                  className={`experience-filter-pill ${isActive ? 'filter-active' : ''}`}
-                >
-                  <Icon size={13} className="filter-tab-icon" />
-                  <span>{tab.label}</span>
-                  <span className="filter-count-badge font-mono">{tab.count}</span>
-                </button>
-              );
-            })}
-          </div>
-        </motion.div>
-
-        {/* =========================================================
-            CONTINUOUS TIMELINE TRACK WITH PHOTON BEAM
-            ========================================================= */}
-        <div className="experience-timeline-container">
-          
-          {/* Timeline Spine Line */}
-          <div className="timeline-spine-track" aria-hidden="true">
-            {/* Traveling Light Photon Beam */}
-            <div className="timeline-photon-beam" />
-          </div>
-
-          {/* Timeline Milestones Stack */}
-          <motion.div layout className="timeline-milestones-stack">
-            <AnimatePresence mode="popLayout">
-              {filteredExperiences.map((exp, idx) => {
-                const isHovered = hoveredExpId === exp.id;
-                const isExpanded = !!expandedDrawers[exp.id];
-
-                return (
-                  <motion.div
-                    key={exp.id}
-                    layout
-                    initial={{ opacity: 0, y: 35 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.96 }}
-                    viewport={{ once: true, amount: 0.15 }}
-                    transition={{ duration: 0.55, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                    className="timeline-item-row"
-                  >
-                    {/* ---------------------------------------------------------
-                        INTERACTIVE TIMELINE NODE
-                        --------------------------------------------------------- */}
-                    <div 
-                      className={`timeline-orbital-node ${exp.isCurrent ? 'current-role-node' : ''} ${isHovered ? 'node-hovered' : ''}`}
-                      aria-hidden="true"
-                    >
-                      {exp.isCurrent ? (
-                        <>
-                          <div className="node-radar-wave" />
-                          <div className="node-core-emerald" />
-                        </>
-                      ) : (
-                        <div className="node-core-ash" />
-                      )}
-                    </div>
-
-                    {/* ---------------------------------------------------------
-                        APPLE LIQUID GLASS SPECIMEN CARD
-                        --------------------------------------------------------- */}
-                    <motion.div
-                      className={`experience-liquid-card ${isHovered ? 'card-hovered' : ''} ${exp.isCurrent ? 'is-current-card' : ''}`}
-                      onMouseEnter={() => setHoveredExpId(exp.id)}
-                      onMouseLeave={() => setHoveredExpId(null)}
-                      whileHover={{ y: -3 }}
-                      transition={{ type: 'spring', stiffness: 220, damping: 24 }}
-                    >
-                      {/* Specular Liquid Top Glare */}
-                      <div className="card-liquid-specular-top" />
-                      <div className="card-ambient-refraction-edge" />
-
-                      {/* Card Header Lockup */}
-                      <div className="card-header-bar">
-                        <div className="card-title-group">
-                          <div className="card-role-title-row">
-                            <h3 className="card-role-title">{exp.role}</h3>
-                            {exp.highlightBadge && (
-                              <span className={`card-badge-pill ${exp.isCurrent ? 'badge-current' : 'badge-highlight'} font-mono`}>
-                                {exp.isCurrent && <span className="current-pulse-dot" />}
-                                {exp.highlightBadge}
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Company, Type & Location Meta */}
-                          <div className="card-company-meta-row">
-                            <span className="card-company-name">
-                              <Building2 size={14} className="meta-icon" />
-                              {exp.company}
-                            </span>
-                            <span className="meta-separator">•</span>
-                            <span className="card-role-type font-mono">{exp.type}</span>
-                            <span className="meta-separator">•</span>
-                            <span className="card-location">
-                              <MapPin size={13} className="meta-icon" />
-                              {exp.location}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Period Capsule */}
-                        <div className="card-period-capsule font-mono">
-                          <Calendar size={13} className="period-icon" />
-                          <span>{exp.period}</span>
-                        </div>
-                      </div>
-
-                      {/* Responsibilities & Achievements */}
-                      <div className="card-responsibilities-list">
-                        {exp.responsibilities.map((bullet, bIdx) => (
-                          <div key={bIdx} className="responsibility-row">
-                            <div className="responsibility-glyph">
-                              <CheckCircle2 size={15} />
-                            </div>
-                            <span className="responsibility-text">{bullet}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Tech Deployed Chips with Official SVG Brand Logos */}
-                      <div className="card-tech-deployed-bar">
-                        <div className="tech-deployed-label font-mono">
-                          <Cpu size={12} className="tech-label-icon" />
-                          <span>TECH DEPLOYED:</span>
-                        </div>
-                        <div className="tech-pills-wrap">
-                          {exp.techStack.map((tech, tIdx) => (
-                            <motion.span
-                              key={tIdx}
-                              className="tech-liquid-pill"
-                              whileHover={{ y: -2, scale: 1.03 }}
-                              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                            >
-                              <TechLogo name={tech} size={15} className="tech-pill-logo" />
-                              <span className="tech-pill-name">{tech}</span>
-                            </motion.span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* =========================================================
-                          EXPANDABLE ARCHITECTURE DRAWER (Deep-Dive)
-                          ========================================================= */}
-                      {exp.architectureDetails && (
-                        <div className="card-architecture-drawer-wrap">
-                          <button
-                            type="button"
-                            onClick={() => toggleDrawer(exp.id)}
-                            className="architecture-toggle-pill font-mono"
-                            aria-expanded={isExpanded}
-                            aria-label="Toggle system architecture details"
-                          >
-                            <Terminal size={13} className="drawer-terminal-icon" />
-                            <span>System Architecture &amp; Engineering Impact</span>
-                            <ChevronDown 
-                              size={14} 
-                              className={`drawer-chevron ${isExpanded ? 'chevron-rotated' : ''}`} 
-                            />
-                          </button>
-
-                          <AnimatePresence>
-                            {isExpanded && (
-                              <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }}
-                                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                                className="architecture-expanded-content"
-                              >
-                                <div className="architecture-inner-well">
-                                  {/* Deep Dive Summary */}
-                                  <p className="architecture-summary-text">
-                                    {exp.architectureDetails.summary}
-                                  </p>
-
-                                  {/* Key Architecture Outcomes */}
-                                  <div className="architecture-outcomes-block">
-                                    <span className="outcomes-header font-mono">SYSTEM GUARANTEES &amp; OUTCOMES:</span>
-                                    <div className="outcomes-list">
-                                      {exp.architectureDetails.outcomes.map((outcome, oIdx) => (
-                                        <div key={oIdx} className="outcome-item">
-                                          <ArrowUpRight size={13} className="outcome-arrow" />
-                                          <span className="outcome-text">{outcome}</span>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </div>
-
-                                  {/* Key Deliverable Footprint */}
-                                  <div className="architecture-footprint font-mono">
-                                    <span className="footprint-label">CORE DELIVERABLE:</span>
-                                    <span className="footprint-value">{exp.architectureDetails.keyDeliverable}</span>
-                                  </div>
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      )}
-
-                    </motion.div>
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
-          </motion.div>
-        </div>
-
-      </div>
-
-      {/* =========================================================
-          SCOPED STYLES: Black, Ash, White + Apple Liquid Glass
-          ========================================================= */}
+    <section 
+      id="experience" 
+      ref={sectionRef} 
+      className="story-narrative-section"
+      style={{
+        // Seamless transition from Skills
+        marginTop: 0,
+        paddingTop: 0
+      }}
+    >
       <style>{`
-        /* ---------------------------------------------------------
-           SECTION SHELL & BACKGROUND
-           --------------------------------------------------------- */
-        .experience-creative-section {
+        /* =========================================================
+           ZERO GAP SKILLS-TO-EXPERIENCE SEAMLESS FIX
+           ========================================================= */
+        #skills.skills-pinned-runway {
+          margin-bottom: 0 !important;
+        }
+
+        /* =========================================================
+           STORY CONTAINER & AMBIENCE (CORTEX-TASTE THEME)
+           ========================================================= */
+        .story-narrative-section {
           position: relative;
+          z-index: 2;
           width: 100%;
-          min-height: 100vh;
-          background: linear-gradient(180deg, #FAF7FC 0%, #F5F3F8 50%, #FAF7FC 100%);
-          padding: 5.5rem 1.5rem 6.5rem 1.5rem;
+          background: #FAF7FC;
+          background-image: 
+            repeating-linear-gradient(42deg, rgba(38, 36, 46, 0.018) 0 1px, transparent 1px 12px),
+            linear-gradient(180deg, #FAF7FC 0%, #F5F3F8 50%, #FAF7FC 100%);
           box-sizing: border-box;
+          color: #121118;
+          overflow: visible;
+        }
+
+        /* Ambient shifting illumination */
+        .story-ambience {
+          position: sticky;
+          top: 0;
+          height: 100vh;
+          margin-bottom: -100vh;
+          pointer-events: none;
+          z-index: 0;
           overflow: hidden;
         }
 
-        .experience-ambient-glow {
+        .story-ambience-glow {
           position: absolute;
-          top: 20%;
-          left: -5%;
-          width: clamp(280px, 35vw, 550px);
-          height: clamp(280px, 35vw, 550px);
+          inset: -10%;
+          background: radial-gradient(48% 52% at 20% 35%, rgba(245, 208, 254, 0.16), transparent 70%),
+                      radial-gradient(42% 46% at 80% 65%, rgba(192, 132, 252, 0.09), transparent 70%);
+          transition: opacity 0.8s ease;
+          pointer-events: none;
+        }
+
+        /* Stage layout: Split 2 columns */
+        .story__stage {
+          position: relative;
+          z-index: 1;
+          max-width: 1320px;
+          margin: 0 auto;
+          padding: 0 1.5rem;
+          display: grid;
+          grid-template-columns: minmax(320px, 1fr) minmax(380px, 1.2fr);
+          gap: 3.5rem;
+          align-items: start;
+        }
+
+        /* =========================================================
+           LEFT COLUMN: STICKY TIME CLOCK & ODOMETER
+           ========================================================= */
+        .story__clock {
+          position: sticky;
+          top: 0;
+          height: 100vh;
+          max-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: flex-start;
+          padding: 3rem 1rem 3rem 0;
+          box-sizing: border-box;
+          z-index: 2;
+        }
+
+        /* 3D Canvas Tunnel Behind Clock */
+        .story__bg-canvas {
+          position: absolute;
+          left: -35%;
+          right: -35%;
+          top: 0;
+          width: 170%;
+          height: 100%;
+          z-index: -1;
+          pointer-events: none;
+          -webkit-mask: radial-gradient(closest-side, #000 50%, transparent 95%);
+          mask: radial-gradient(closest-side, #000 50%, transparent 95%);
+          opacity: 0.85;
+        }
+
+        /* Eyebrow badge */
+        .story__eyebrow {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.35rem 0.85rem;
+          background: rgba(255, 255, 255, 0.8);
+          border: 1px solid rgba(38, 36, 46, 0.1);
+          border-radius: 9999px;
+          font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+          font-size: 0.6875rem;
+          font-weight: 600;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: #63606E;
+          backdrop-filter: blur(12px);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+          margin-bottom: 0.75rem;
+        }
+
+        .story__live-dot {
+          width: 6px;
+          height: 6px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(245, 208, 254, 0.28) 0%, rgba(250, 247, 252, 0) 70%);
-          filter: blur(85px);
+          background: #10B981;
+          box-shadow: 0 0 8px #10B981;
+          animation: pulseGreen 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseGreen {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        /* Main Editorial Headline */
+        .story__headline {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+          font-size: clamp(2rem, 3.8vw, 3.25rem);
+          font-weight: 700;
+          line-height: 1.05;
+          letter-spacing: -0.035em;
+          color: #121118;
+          margin: 0 0 1rem 0;
+        }
+
+        .story__subheadline {
+          font-size: 0.9375rem;
+          line-height: 1.5;
+          color: #63606E;
+          max-width: 420px;
+          margin: 0 0 1.75rem 0;
+        }
+
+        /* Mechanical Rolling Year Digits (Odometer) */
+        .story__yr {
+          display: flex;
+          align-items: center;
+          font-size: clamp(5.5rem, 9.5vw, 9.5rem);
+          font-weight: 800;
+          line-height: 1;
+          letter-spacing: -0.06em;
+          font-variant-numeric: tabular-nums;
+          color: #121118;
+          margin: 0.5rem 0 0.25rem -0.04em;
+          text-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        }
+
+        .story__digit {
+          display: block;
+          height: 1em;
+          overflow: hidden;
+          padding-right: 0.02em;
+        }
+
+        .story__digit-col {
+          display: flex;
+          flex-direction: column;
+          transform: translateY(calc(var(--d, 0) * -1em));
+          transition: transform 0.85s cubic-bezier(0.65, 0, 0.2, 1);
+        }
+
+        .story__digit:nth-child(1) .story__digit-col { transition-delay: 0s; }
+        .story__digit:nth-child(2) .story__digit-col { transition-delay: 0.04s; }
+        .story__digit:nth-child(3) .story__digit-col { transition-delay: 0.08s; }
+        .story__digit:nth-child(4) .story__digit-col { transition-delay: 0.12s; }
+
+        .story__digit-col i {
+          display: block;
+          height: 1em;
+          font-style: normal;
+          text-align: center;
+        }
+
+        /* Active Tenure Period Tag */
+        .story__when-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          margin-top: 1rem;
+          padding: 0.45rem 1rem;
+          background: rgba(245, 208, 254, 0.22);
+          border: 1px solid rgba(245, 208, 254, 0.6);
+          border-radius: 8px;
+          font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+          font-size: 0.8125rem;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: #26242E;
+        }
+
+        /* Chrono Progress Meter */
+        .story__meter {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          margin-top: 2rem;
+          font-size: 0.875rem;
+          font-weight: 700;
+          color: #121118;
+          font-variant-numeric: tabular-nums;
+          width: 100%;
+          max-width: 360px;
+        }
+
+        .story__rw-icon {
+          width: 1.25rem;
+          height: 1.25rem;
+          color: #63606E;
+          transform: rotate(calc(var(--p, 0) * -720deg));
+          transition: transform 0.1s linear;
+        }
+
+        .story__meter-count {
+          font-weight: 800;
+          color: #121118;
+        }
+
+        .story__meter-total {
+          color: #8E8B99;
+          font-weight: 500;
+        }
+
+        .story__meter-track {
+          position: relative;
+          flex: 1;
+          height: 3px;
+          border-radius: 9999px;
+          background: rgba(38, 36, 46, 0.12);
+          overflow: hidden;
+          margin-left: 0.5rem;
+        }
+
+        .story__meter-fill {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background: #121118;
+          transform-origin: 0 50%;
+          transform: scaleX(var(--p, 0));
+          transition: transform 0.05s linear;
+        }
+
+        /* =========================================================
+           RIGHT COLUMN: NATURAL SCROLLING STORYLINE
+           ========================================================= */
+        .story__line {
+          position: relative;
+          padding-top: 18vh;
+          padding-bottom: 25vh;
+        }
+
+        /* Timeline Guide Rail */
+        .story__rail {
+          position: absolute;
+          left: 1.25rem;
+          width: 2px;
+          background: rgba(38, 36, 46, 0.12);
+          border-radius: 2px;
           pointer-events: none;
           z-index: 1;
         }
 
-        .experience-content-wrapper {
-          position: relative;
-          z-index: 5;
-          max-width: 980px;
-          margin: 0 auto;
-        }
-
-        /* ---------------------------------------------------------
-           EDITORIAL HEADER LOCKUP
-           --------------------------------------------------------- */
-        .experience-header-lockup {
-          text-align: center;
-          max-width: 780px;
-          margin: 0 auto 3.25rem auto;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .experience-mono-eyebrow {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.4rem;
-          padding: 0.22rem 0.75rem;
-          background: rgba(255, 255, 255, 0.85);
-          backdrop-filter: blur(14px);
-          border: 1px solid rgba(226, 224, 235, 0.9);
-          border-radius: 9999px;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-          margin-bottom: 0.5rem;
-          font-family: var(--font-mono, monospace);
-          font-size: 0.68rem;
-          letter-spacing: 0.16em;
-          color: #63606E;
-        }
-
-        .eyebrow-index {
-          color: #8E8B99;
-          font-weight: 700;
-        }
-        .eyebrow-divider {
-          color: #D4D1DC;
-        }
-        .eyebrow-title {
-          font-weight: 600;
-        }
-
-        .experience-headline {
-          font-family: var(--font-heading, 'Outfit', sans-serif);
-          font-size: clamp(2rem, 3.8vw, 2.85rem);
-          font-weight: 600;
-          letter-spacing: -0.03em;
-          line-height: 1.15;
-          color: #121118;
-          margin: 0 0 0.85rem 0;
-        }
-
-        .headline-ampersand {
-          color: #8E8B99;
-          font-weight: 300;
-        }
-
-        .headline-editorial-italic {
-          font-family: 'Playfair Display', serif;
-          font-style: italic;
-          font-weight: 400;
-          background: linear-gradient(135deg, #121118 0%, #63606E 60%, #F5D0FE 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-
-        .experience-subheadline {
-          font-size: 0.95rem;
-          line-height: 1.6;
-          color: #63606E;
-          max-width: 620px;
-          margin: 0 auto 1.75rem auto;
-        }
-
-        /* ---------------------------------------------------------
-           APPLE LIQUID GLASS FILTER DOCK
-           --------------------------------------------------------- */
-        .experience-filter-dock {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.45rem;
-          padding: 0.35rem;
-          border-radius: 9999px;
-          background: rgba(255, 255, 255, 0.45);
-          backdrop-filter: blur(24px) saturate(200%);
-          -webkit-backdrop-filter: blur(24px) saturate(200%);
-          border: 1px solid rgba(255, 255, 255, 0.85);
-          box-shadow: 
-            0 8px 24px rgba(0, 0, 0, 0.04),
-            inset 0 1px 1.5px #FFFFFF;
-          flex-wrap: wrap;
-          justify-content: center;
-        }
-
-        .experience-filter-pill {
-          position: relative;
-          padding: 0.45rem 1.15rem;
-          border-radius: 9999px;
-          background: transparent;
-          border: 1px solid transparent;
-          color: #63606E;
-          font-size: 0.78rem;
-          font-weight: 500;
-          cursor: pointer;
-          display: inline-flex;
-          align-items: center;
-          gap: 0.45rem;
-          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-          user-select: none;
-        }
-
-        .experience-filter-pill:hover {
-          color: #121118;
-          background: rgba(255, 255, 255, 0.55);
-        }
-
-        .experience-filter-pill.filter-active {
-          background: #14131A;
-          color: #FFFFFF;
-          font-weight: 600;
-          box-shadow: 
-            0 4px 16px rgba(20, 19, 26, 0.25),
-            inset 0 1px 1px rgba(255, 255, 255, 0.25);
-        }
-
-        .filter-tab-icon {
-          opacity: 0.8;
-        }
-
-        .filter-count-badge {
-          font-size: 0.68rem;
-          padding: 0.1rem 0.45rem;
-          border-radius: 9999px;
-          background: rgba(255, 255, 255, 0.12);
-          color: inherit;
-        }
-
-        .experience-filter-pill:not(.filter-active) .filter-count-badge {
-          background: rgba(0, 0, 0, 0.05);
-          color: #8E8B99;
-        }
-
-        /* ---------------------------------------------------------
-           TIMELINE CONTAINER & SPINE
-           --------------------------------------------------------- */
-        .experience-timeline-container {
-          position: relative;
-          width: 100%;
-          margin: 0 auto;
-        }
-
-        .timeline-spine-track {
+        /* Active Filled Trail */
+        .story__tail {
           position: absolute;
-          top: 28px;
-          bottom: 28px;
-          left: 20px;
+          left: 1.25rem;
           width: 2px;
-          background: linear-gradient(180deg, rgba(226, 224, 235, 0.9) 0%, rgba(245, 208, 254, 0.6) 50%, rgba(226, 224, 235, 0.9) 100%);
-          border-radius: 9999px;
-          overflow: hidden;
+          background: linear-gradient(180deg, #10B981 0%, #121118 60%, #F5D0FE 100%);
+          border-radius: 2px;
+          pointer-events: none;
           z-index: 2;
         }
 
-        .timeline-photon-beam {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 90px;
-          background: linear-gradient(180deg, transparent 0%, #FFFFFF 50%, #F5D0FE 80%, transparent 100%);
-          border-radius: 9999px;
-          animation: spinePhotonBeam 3.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-          filter: drop-shadow(0 0 6px #F5D0FE);
+        /* Sticky Travelling Dot */
+        .story__sticky-dot-wrapper {
+          position: sticky;
+          top: calc(50vh - 0.75rem);
+          left: 1.25rem;
+          margin-left: -0.65rem;
+          width: 1.5rem;
+          height: 1.5rem;
+          pointer-events: none;
+          z-index: 10;
         }
 
-        @keyframes spinePhotonBeam {
-          0% { transform: translateY(-100%); opacity: 0; }
-          20% { opacity: 1; }
-          80% { opacity: 1; }
-          100% { transform: translateY(1100%); opacity: 0; }
+        .story__travel-dot {
+          width: 1.35rem;
+          height: 1.35rem;
+          border-radius: 50%;
+          background: #121118;
+          border: 2px solid #FFFFFF;
+          box-shadow: 0 0 0 4px rgba(245, 208, 254, 0.5), 0 4px 14px rgba(0, 0, 0, 0.2);
+          transition: background 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
         }
 
-        .timeline-milestones-stack {
+        .story-narrative-section[data-current="true"] .story__travel-dot {
+          background: #10B981;
+          box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.25), 0 4px 14px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Chapter List */
+        .story__list {
+          list-style: none;
+          margin: 0;
+          padding: 0 0 0 3.5rem;
           display: flex;
           flex-direction: column;
-          gap: 2.25rem;
-          width: 100%;
+          gap: 4.5rem;
         }
 
-        .timeline-item-row {
+        /* Individual Chapter Item */
+        .story__chapter-item {
           position: relative;
-          padding-left: 58px;
-          box-sizing: border-box;
+          opacity: 0.38;
+          transform: translateY(8px);
+          transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* ---------------------------------------------------------
-           INTERACTIVE TIMELINE NODE
-           --------------------------------------------------------- */
-        .timeline-orbital-node {
-          position: absolute;
-          left: 6px;
-          top: 26px;
-          width: 30px;
-          height: 30px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 5;
-          transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        .story__chapter-item.is-active {
+          opacity: 1;
+          transform: translateY(0);
         }
 
-        .node-core-ash {
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          background: #14131A;
-          border: 3px solid #FFFFFF;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-          transition: all 0.25s ease;
-        }
-
-        .node-core-emerald {
-          width: 14px;
-          height: 14px;
-          border-radius: 50%;
-          background: #16A34A;
-          border: 3px solid #FFFFFF;
-          box-shadow: 0 0 12px rgba(22, 163, 74, 0.6);
+        /* =========================================================
+           LIQUID GLASS CHAPTER CARD
+           ========================================================= */
+        .story__card {
           position: relative;
-          z-index: 2;
-        }
-
-        .node-radar-wave {
-          position: absolute;
-          inset: -4px;
-          border-radius: 50%;
-          border: 1.5px solid rgba(22, 163, 74, 0.7);
-          animation: nodePulseRing 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-        }
-
-        @keyframes nodePulseRing {
-          0% { transform: scale(0.85); opacity: 0.9; }
-          100% { transform: scale(1.85); opacity: 0; }
-        }
-
-        .node-hovered .node-core-ash {
-          transform: scale(1.25);
-          background: #F5D0FE;
-          box-shadow: 0 0 10px rgba(245, 208, 254, 0.8);
-        }
-
-        /* ---------------------------------------------------------
-           APPLE LIQUID GLASS SPECIMEN CARD
-           --------------------------------------------------------- */
-        .experience-liquid-card {
-          position: relative;
-          border-radius: 20px;
-          background: rgba(255, 255, 255, 0.78);
-          backdrop-filter: blur(28px) saturate(190%);
-          -webkit-backdrop-filter: blur(28px) saturate(190%);
-          border: 1px solid rgba(255, 255, 255, 0.9);
+          background: rgba(255, 255, 255, 0.88);
+          backdrop-filter: blur(24px) saturate(190%);
+          -webkit-backdrop-filter: blur(24px) saturate(190%);
+          border: 1px solid rgba(38, 36, 46, 0.12);
+          border-radius: 24px;
+          padding: 2.25rem 2.25rem 2rem;
           box-shadow: 
-            0 16px 45px -12px rgba(18, 17, 26, 0.06),
-            0 2px 10px rgba(0, 0, 0, 0.02),
+            0 16px 36px -12px rgba(20, 19, 26, 0.06),
             inset 0 1.5px 2px rgba(255, 255, 255, 0.95);
-          padding: 1.85rem 1.85rem 1.65rem 1.85rem;
-          transition: border-color 0.3s ease, box-shadow 0.3s ease;
-          overflow: hidden;
+          transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.3s ease;
         }
 
-        .experience-liquid-card.card-hovered {
-          border-color: rgba(245, 208, 254, 0.95);
+        .story__chapter-item.is-active .story__card {
+          border-color: rgba(245, 208, 254, 0.9);
           box-shadow: 
-            0 22px 60px -15px rgba(18, 17, 26, 0.09),
-            0 0 25px rgba(245, 208, 254, 0.25),
+            0 24px 50px -16px rgba(20, 19, 26, 0.12),
+            0 0 32px rgba(245, 208, 254, 0.25),
             inset 0 1.5px 2px #FFFFFF;
         }
 
-        .experience-liquid-card.is-current-card {
-          border-left: 3px solid #16A34A;
+        .story__card:hover {
+          transform: translateY(-2px);
+          border-color: rgba(38, 36, 46, 0.25);
         }
 
-        .card-liquid-specular-top {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 1.5px;
-          background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.95) 30%, rgba(245, 208, 254, 0.6) 70%, transparent 100%);
-          pointer-events: none;
-        }
-
-        .card-ambient-refraction-edge {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 1.5px;
-          height: 50%;
-          background: linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, transparent 100%);
-          pointer-events: none;
-        }
-
-        /* ---------------------------------------------------------
-           CARD HEADER BAR
-           --------------------------------------------------------- */
-        .card-header-bar {
+        /* Card Top Metadata Row */
+        .story__card-header {
           display: flex;
-          align-items: flex-start;
+          align-items: center;
           justify-content: space-between;
-          gap: 1.25rem;
           flex-wrap: wrap;
+          gap: 0.75rem;
           margin-bottom: 1.25rem;
         }
 
-        .card-title-group {
-          display: flex;
-          flex-direction: column;
-          gap: 0.35rem;
-        }
-
-        .card-role-title-row {
-          display: flex;
+        .story__card-period-chip {
+          display: inline-flex;
           align-items: center;
-          gap: 0.65rem;
-          flex-wrap: wrap;
+          gap: 0.4rem;
+          padding: 0.25rem 0.75rem;
+          background: rgba(38, 36, 46, 0.05);
+          border: 1px solid rgba(38, 36, 46, 0.08);
+          border-radius: 9999px;
+          font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: #63606E;
         }
 
-        .card-role-title {
-          font-family: var(--font-heading, sans-serif);
-          font-size: 1.35rem;
-          font-weight: 700;
-          color: #121118;
-          letter-spacing: -0.02em;
-          margin: 0;
-        }
-
-        .card-badge-pill {
+        .story__card-badge {
           display: inline-flex;
           align-items: center;
           gap: 0.35rem;
-          font-size: 0.68rem;
-          font-weight: 600;
-          padding: 0.2rem 0.65rem;
+          padding: 0.25rem 0.85rem;
           border-radius: 9999px;
-          letter-spacing: 0.04em;
+          font-size: 0.75rem;
+          font-weight: 700;
+          letter-spacing: 0.02em;
         }
 
-        .badge-current {
-          background: rgba(22, 163, 74, 0.08);
-          color: #15803D;
-          border: 1px solid rgba(22, 163, 74, 0.25);
+        .badge--current {
+          background: rgba(16, 185, 129, 0.12);
+          border: 1px solid rgba(16, 185, 129, 0.35);
+          color: #065F46;
         }
 
-        .current-pulse-dot {
-          width: 5px;
-          height: 5px;
-          border-radius: 50%;
-          background: #16A34A;
-          box-shadow: 0 0 6px rgba(22, 163, 74, 0.8);
-        }
-
-        .badge-highlight {
-          background: rgba(245, 208, 254, 0.35);
-          color: #4C1D95;
+        .badge--standard {
+          background: rgba(245, 208, 254, 0.28);
           border: 1px solid rgba(245, 208, 254, 0.75);
+          color: #4A1D96;
         }
 
-        .card-company-meta-row {
-          display: flex;
-          align-items: center;
-          gap: 0.45rem;
-          font-size: 0.82rem;
-          color: #63606E;
-          flex-wrap: wrap;
-        }
-
-        .card-company-name {
-          font-weight: 600;
-          color: #1E1B29;
-          display: inline-flex;
-          align-items: center;
-          gap: 0.35rem;
-        }
-
-        .meta-icon {
-          color: #8E8B99;
-          flex-shrink: 0;
-        }
-
-        .meta-separator {
-          color: #D4D1DC;
-          font-size: 0.7rem;
-        }
-
-        .card-role-type {
-          color: #8E8B99;
-          font-size: 0.74rem;
-        }
-
-        .card-location {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.3rem;
-          color: #63606E;
-          font-size: 0.78rem;
-        }
-
-        .card-period-capsule {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.4rem;
-          padding: 0.35rem 0.85rem;
-          border-radius: 9999px;
-          background: rgba(255, 255, 255, 0.9);
-          border: 1px solid rgba(226, 224, 235, 0.9);
-          color: #373342;
-          font-size: 0.74rem;
-          font-weight: 600;
-          white-space: nowrap;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-        }
-
-        .period-icon {
-          color: #8E8B99;
-        }
-
-        /* ---------------------------------------------------------
-           RESPONSIBILITIES LIST
-           --------------------------------------------------------- */
-        .card-responsibilities-list {
-          display: flex;
-          flex-direction: column;
-          gap: 0.55rem;
-          margin-bottom: 1.35rem;
-        }
-
-        .responsibility-row {
-          display: flex;
-          align-items: flex-start;
-          gap: 0.65rem;
-        }
-
-        .responsibility-glyph {
-          color: #16A34A;
-          flex-shrink: 0;
-          margin-top: 2px;
-        }
-
-        .responsibility-text {
-          font-size: 0.86rem;
-          line-height: 1.55;
-          color: #3F3C4D;
-        }
-
-        /* ---------------------------------------------------------
-           TECH DEPLOYED BAR
-           --------------------------------------------------------- */
-        .card-tech-deployed-bar {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          flex-wrap: wrap;
-          padding-top: 1rem;
-          border-top: 1px solid rgba(226, 224, 235, 0.75);
-        }
-
-        .tech-deployed-label {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.35rem;
-          font-size: 0.65rem;
+        /* Role & Company */
+        .story__card-role {
+          font-size: 1.625rem;
           font-weight: 700;
-          letter-spacing: 0.12em;
-          color: #8E8B99;
-        }
-
-        .tech-label-icon {
-          color: #8E8B99;
-        }
-
-        .tech-pills-wrap {
-          display: flex;
-          align-items: center;
-          gap: 0.4rem;
-          flex-wrap: wrap;
-        }
-
-        .tech-liquid-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.35rem;
-          padding: 0.25rem 0.65rem;
-          border-radius: 9999px;
-          background: rgba(255, 255, 255, 0.85);
-          border: 1px solid rgba(226, 224, 235, 0.9);
-          box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.02);
-          cursor: default;
-        }
-
-        .tech-pill-logo {
-          flex-shrink: 0;
-        }
-
-        .tech-pill-name {
-          font-size: 0.74rem;
-          font-weight: 500;
-          color: #2D2938;
-        }
-
-        /* ---------------------------------------------------------
-           EXPANDABLE ARCHITECTURE DRAWER
-           --------------------------------------------------------- */
-        .card-architecture-drawer-wrap {
-          margin-top: 1rem;
-        }
-
-        .architecture-toggle-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.45rem;
-          padding: 0.35rem 0.85rem;
-          border-radius: 9999px;
-          background: rgba(20, 19, 26, 0.04);
-          border: 1px solid rgba(226, 224, 235, 0.8);
-          color: #4C4859;
-          font-size: 0.7rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .architecture-toggle-pill:hover {
-          background: rgba(20, 19, 26, 0.08);
-          border-color: rgba(245, 208, 254, 0.85);
+          line-height: 1.2;
+          letter-spacing: -0.025em;
           color: #121118;
+          margin: 0 0 0.5rem 0;
         }
 
-        .drawer-terminal-icon {
-          color: #8E8B99;
-        }
-
-        .drawer-chevron {
-          color: #8E8B99;
-          transition: transform 0.25s ease;
-        }
-
-        .drawer-chevron.chevron-rotated {
-          transform: rotate(180deg);
-        }
-
-        .architecture-expanded-content {
-          overflow: hidden;
-        }
-
-        .architecture-inner-well {
-          margin-top: 0.85rem;
-          padding: 1.15rem;
-          border-radius: 14px;
-          background: rgba(20, 19, 26, 0.03);
-          border: 1px solid rgba(226, 224, 235, 0.8);
-          display: flex;
-          flex-direction: column;
-          gap: 0.85rem;
-        }
-
-        .architecture-summary-text {
-          font-size: 0.82rem;
-          line-height: 1.55;
-          color: #4C4859;
-          margin: 0;
-        }
-
-        .architecture-outcomes-block {
-          display: flex;
-          flex-direction: column;
-          gap: 0.45rem;
-        }
-
-        .outcomes-header {
-          font-size: 0.62rem;
-          font-weight: 700;
-          letter-spacing: 0.12em;
-          color: #8E8B99;
-        }
-
-        .outcomes-list {
-          display: flex;
-          flex-direction: column;
-          gap: 0.35rem;
-        }
-
-        .outcome-item {
-          display: flex;
-          align-items: flex-start;
-          gap: 0.45rem;
-        }
-
-        .outcome-arrow {
-          color: #9333EA;
-          flex-shrink: 0;
-          margin-top: 2px;
-        }
-
-        .outcome-text {
-          font-size: 0.78rem;
-          line-height: 1.45;
-          color: #2D2938;
-        }
-
-        .architecture-footprint {
+        .story__card-company {
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          font-size: 0.68rem;
-          padding-top: 0.55rem;
-          border-top: 1px dashed rgba(226, 224, 235, 0.9);
-          flex-wrap: wrap;
-        }
-
-        .footprint-label {
-          color: #8E8B99;
-          font-weight: 700;
-          letter-spacing: 0.08em;
-        }
-
-        .footprint-value {
-          color: #121118;
+          font-size: 1rem;
           font-weight: 600;
+          color: #63606E;
+          margin: 0 0 1.5rem 0;
         }
 
-        /* ---------------------------------------------------------
-           RESPONSIVE REFINEMENTS
-           --------------------------------------------------------- */
-        @media (max-width: 768px) {
-          .experience-creative-section {
-            padding: 4rem 1rem 5rem 1rem;
+        .story__card-location {
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: #8E8B99;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.25rem;
+        }
+
+        /* Responsibility Bullet List */
+        .story__bullets {
+          list-style: none;
+          margin: 0 0 1.5rem 0;
+          padding: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 0.875rem;
+        }
+
+        .story__bullet-item {
+          position: relative;
+          padding-left: 1.5rem;
+          font-size: 0.9375rem;
+          line-height: 1.62;
+          color: #26242E;
+        }
+
+        .story__bullet-item::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0.55rem;
+          width: 6px;
+          height: 6px;
+          border-radius: 1px;
+          background: #63606E;
+          transform: rotate(45deg);
+          transition: background 0.3s ease;
+        }
+
+        .story__chapter-item.is-active .story__bullet-item::before {
+          background: #121118;
+        }
+
+        /* Deliverable Highlight Callout */
+        .story__deliverable-callout {
+          margin-top: 1.25rem;
+          padding: 1rem 1.25rem;
+          background: rgba(38, 36, 46, 0.035);
+          border: 1px solid rgba(38, 36, 46, 0.08);
+          border-radius: 14px;
+          display: flex;
+          align-items: flex-start;
+          gap: 0.75rem;
+        }
+
+        .story__deliverable-icon {
+          flex-shrink: 0;
+          width: 1.15rem;
+          height: 1.15rem;
+          color: #121118;
+          margin-top: 0.15rem;
+        }
+
+        .story__deliverable-title {
+          font-size: 0.8125rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          color: #121118;
+          margin: 0 0 0.25rem 0;
+        }
+
+        .story__deliverable-desc {
+          font-size: 0.875rem;
+          line-height: 1.45;
+          color: #63606E;
+          margin: 0;
+        }
+
+        /* Tech Stack Tags */
+        .story__tags-container {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          margin-top: 1.5rem;
+          padding-top: 1.25rem;
+          border-top: 1px solid rgba(38, 36, 46, 0.08);
+        }
+
+        .story__tag-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.35rem;
+          padding: 0.3rem 0.7rem;
+          background: #FFFFFF;
+          border: 1px solid rgba(38, 36, 46, 0.1);
+          border-radius: 8px;
+          font-size: 0.8125rem;
+          font-weight: 600;
+          color: #26242E;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+          transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .story__tag-pill:hover {
+          transform: translateY(-1px);
+          border-color: rgba(38, 36, 46, 0.3);
+        }
+
+        /* =========================================================
+           RESPONSIVE DESIGN (PHONES & TABLETS)
+           ========================================================= */
+        @media (max-width: 960px) {
+          .story__stage {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            padding: 0 1.25rem;
           }
-          .experience-headline {
-            font-size: 1.85rem;
+
+          .story__clock {
+            position: relative;
+            height: auto;
+            max-height: none;
+            padding: 4rem 0 2rem 0;
           }
-          .timeline-item-row {
-            padding-left: 42px;
+
+          .story__bg-canvas {
+            display: none;
           }
-          .timeline-spine-track {
-            left: 12px;
+
+          .story__line {
+            padding-top: 2rem;
+            padding-bottom: 6rem;
           }
-          .timeline-orbital-node {
-            left: -2px;
+
+          .story__rail, .story__tail {
+            left: 0.75rem;
           }
-          .experience-liquid-card {
-            padding: 1.35rem;
+
+          .story__sticky-dot-wrapper {
+            left: 0.75rem;
           }
-          .card-header-bar {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.75rem;
+
+          .story__list {
+            padding-left: 2.5rem;
+            gap: 3.5rem;
+          }
+
+          .story__card {
+            padding: 1.75rem 1.5rem;
           }
         }
       `}</style>
+
+      {/* Atmospheric Ambient Drift */}
+      <div className="story-ambience" aria-hidden="true">
+        <div className="story-ambience-glow" />
+      </div>
+
+      <div className="story__stage">
+        
+        {/* =========================================================
+            LEFT COLUMN: PINNED TIME-TRAVEL CLOCK & ODOMETER
+            ========================================================= */}
+        <aside className="story__clock" aria-label="Timeline Chrono Clock">
+          {/* Canvas-driven 3D concentric rotating time dials */}
+          <canvas ref={canvasRef} className="story__bg-canvas" aria-hidden="true" />
+
+          {/* Eyebrow Status */}
+          <div className="story__eyebrow">
+            <span className="story__live-dot" />
+            <span>Career Chronicle // My Story</span>
+          </div>
+
+          {/* Editorial Headline */}
+          <h2 className="story__headline">
+            Tracing the trajectory.
+          </h2>
+
+          <p className="story__subheadline">
+            A chronological timeline of production engineering, Python architectures, 
+            and verifiable full-stack milestones.
+          </p>
+
+          {/* Rolling Mechanical Digits (Odometer) */}
+          <div className="story__yr" aria-label={`Current active year: ${activeChapter.year}`}>
+            {yearDigits.map((digit, i) => (
+              <span key={i} className="story__digit">
+                <span 
+                  className="story__digit-col" 
+                  style={{ '--d': digit } as React.CSSProperties}
+                >
+                  <i>0</i><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i>
+                </span>
+              </span>
+            ))}
+          </div>
+
+          {/* Active Period Label */}
+          <div className="story__when-badge">
+            <Calendar className="w-3.5 h-3.5 text-zinc-600" />
+            <span>{activeChapter.when}</span>
+          </div>
+
+          {/* Chrono Progress Meter & Rewind Wheel */}
+          <div 
+            className="story__meter" 
+            style={{ '--p': scrollProgress } as React.CSSProperties}
+            aria-hidden="true"
+          >
+            <svg 
+              className="story__rw-icon" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="M3 12a9 9 0 1 0 3-6.7"/>
+              <path d="M3 4v5h5"/>
+              <path d="M12 7v5l3 2"/>
+            </svg>
+            <span className="story__meter-count">
+              {String(activeIndex + 1).padStart(2, '0')}
+            </span>
+            <span className="story__meter-total">
+              / 04
+            </span>
+            <div className="story__meter-track">
+              <div className="story__meter-fill" />
+            </div>
+          </div>
+        </aside>
+
+        {/* =========================================================
+            RIGHT COLUMN: NATURAL SCROLLING STORYLINE
+            ========================================================= */}
+        <div ref={lineRef} className="story__line">
+          {/* Vertical Rail & Traveling Tail */}
+          <span ref={railRef} className="story__rail" aria-hidden="true" />
+          <span ref={tailRef} className="story__tail" aria-hidden="true" />
+
+          {/* Sticky Traveling Focus Dot */}
+          <div ref={dotRef} className="story__sticky-dot-wrapper" aria-hidden="true">
+            <div className="story__travel-dot" />
+          </div>
+
+          {/* Chapters List */}
+          <ol ref={listRef} className="story__list">
+            {STORY_CHAPTERS.map((chap, idx) => {
+              const isActive = idx === activeIndex;
+
+              return (
+                <li 
+                  key={chap.id}
+                  className={`story__chapter-item ${isActive ? 'is-active' : ''}`}
+                  data-index={idx}
+                  data-year={chap.year}
+                  data-when={chap.when}
+                >
+                  <article className="story__card">
+                    {/* Header: Period & Highlight Badge */}
+                    <div className="story__card-header">
+                      <span className="story__card-period-chip">
+                        <Calendar className="w-3.5 h-3.5" />
+                        <span>{chap.when}</span>
+                      </span>
+
+                      <span className={`story__card-badge ${chap.isCurrent ? 'badge--current' : 'badge--standard'}`}>
+                        {chap.isCurrent && <span className="story__live-dot" />}
+                        <span>{chap.highlightBadge}</span>
+                      </span>
+                    </div>
+
+                    {/* Role Title */}
+                    <h3 className="story__card-role">
+                      {chap.role}
+                    </h3>
+
+                    {/* Company & Location */}
+                    <div className="story__card-company">
+                      <span>{chap.company}</span>
+                      <span>·</span>
+                      <span className="story__card-location">
+                        <MapPin className="w-3.5 h-3.5 text-zinc-400" />
+                        {chap.location}
+                      </span>
+                    </div>
+
+                    {/* Bullet Points */}
+                    <ul className="story__bullets">
+                      {chap.responsibilities.map((resp, bIdx) => (
+                        <li key={bIdx} className="story__bullet-item">
+                          {resp}
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* Deliverable Callout */}
+                    <div className="story__deliverable-callout">
+                      <Sparkles className="story__deliverable-icon" />
+                      <div>
+                        <div className="story__deliverable-title">
+                          Key Deliverable & Impact
+                        </div>
+                        <p className="story__deliverable-desc">
+                          {chap.keyDeliverable} — <strong>{chap.outcomeMetric}</strong>
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Tech Stack Pills */}
+                    <div className="story__tags-container">
+                      {chap.techStack.map((tech) => (
+                        <span key={tech} className="story__tag-pill">
+                          <TechLogo name={tech} size={13} className="text-zinc-600" />
+                          <span>{tech}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </article>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+
+      </div>
     </section>
   );
 };

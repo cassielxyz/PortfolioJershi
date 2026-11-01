@@ -494,7 +494,7 @@ export const Skills: React.FC = () => {
           width: 100%;
           height: clamp(3400px, 420vh, 4800px);
           background: linear-gradient(180deg, #FAF7FC 0%, #F5F3F8 50%, #FAF7FC 100%);
-          margin-bottom: 2.5rem;
+          margin-bottom: 0;
         }
 
         .skills-sticky-stage {

@@ -500,31 +500,46 @@ A modern, high-performance portfolio for **Jershika C**, an Honors Computer Scie
 
 ### #24. Creative Experience Section Architecture (`cortex-taste` & Apple Liquid Glass)
 - **Date**: 2026-11-02
-- **Driver**: Implemented the next section (Experience) according to user specifications: creative layout, animations, scroll effects, Black, Ash, White theme with minimal whisper pinkish-lavender accents, and Apple Liquid Glass components adhering strictly to `cortex-taste`.
+- **Driver**: Initial exploration of experience section.
+
+---
+
+### #25. "My Story" Chronological Narrative Experience Architecture (Reverse Engineered from Rishi Thakor)
+- **Date**: 2026-11-02
+- **Driver**: User requested removing the gap between Skills & Experience and re-architecting Experience into a seamless scroll Story section inspired by `https://therishithakor.com/my-story`.
 - **Deliverables & Architectural Decisions**:
-  1. **Aesthetic & Color Palette**:
-     - Deep obsidian charcoal (`#121118`, `#14131A`), refined ash neutrals (`#26242E`, `#63606E`, `#8E8B99`, `#E5E3EB`), and pure museum white (`#FFFFFF`).
-     - Minimal whisper light pinkish-lavender accents (`#F5D0FE`, `#FAF7FC`) on badges, specular glare lines, and glowing photon trails.
-  2. **Editorial Typography**:
-     - Monospace eyebrow: `03 / PROFESSIONAL TRAJECTORY & EXPERIENCE`.
-     - Display heading: "Professional Experience &" in bold modern sans, "Engineering Milestones" in *Playfair Display* italic with ash-to-lavender gradient.
-  3. **Apple Liquid Glass Segmented Control Dock**:
-     - visionOS frosted liquid glass dock (`backdrop-filter: blur(24px) saturate(200%)`).
-     - Segmented filters: All Milestones (4), Production & Enterprise (1), Engineering Internships (3).
-     - Floating active pill with specular top reflection and ambient glow.
-  4. **Continuous Timeline Track & Animated Traveling Light Photon Beam**:
-     - Vertical timeline spine track with traveling gradient light beam (`animation: spinePhotonBeam 3.6s infinite`).
-     - Live Pulsing Orbital Node on current role (Imperial Info System): Active emerald beacon with radial radar pulse rings (`animation: nodePulseRing 2.4s infinite`).
-     - Ash & frosted nodes for completed internships with interactive scale hover effects.
-  5. **Apple Liquid Glass Specimen Cards**:
-     - High-density frosted glass blur (`backdrop-filter: blur(28px) saturate(190%)`).
-     - Hairline specular highlight glare (`inset 0 1.5px 2px rgba(255, 255, 255, 0.95)`).
-     - Role titles, verified achievement checkmarks (`#16A34A`), and authentic brand vector tech deployed pills via `TechLogo` (React, Python, REST APIs, MongoDB, HTML5, JavaScript, etc.).
-  6. **Interactive Expandable Architecture Drawers**:
-     - Frosted toggle pill with rotating chevron (`System Architecture & Engineering Impact`).
-     - Framer Motion `AnimatePresence` height transition revealing deep architectural summaries, key system outcomes, and core deliverables without cluttering initial view.
-  7. **Preservation of Sections 1, 2, and 3**:
-     - Section 1 (Hero portrait ripple color reveal canvas), Section 2 (About terminal & metrics bento), and Section 3 (Skills native pinned sticky runway card deck) remain 100% UNTOUCHED and fully functional.
-  8. **Verification**:
-     - `npm run build` (`tsc -b && vite build`) compiled cleanly with exit code 0.
-     - Live dev server verified on `http://localhost:5173/`.
+  1. **Zero-Gap Skills-to-Experience Seamless Flow**:
+     - Removed the `margin-bottom: 2.5rem` from `.skills-pinned-runway` in `Skills.tsx` (and in `backups/sections_v1_fixed/Skills.tsx`), setting it to `margin-bottom: 0`.
+     - Completely eliminated the horizontal light stripe between the bottom of the Skills card deck and Experience.
+  2. **Reverse Engineered "My Story" Dual-Column Architecture**:
+     - **Left Column: Pinned Sticky Time Clock (`.story__clock`)**:
+       - `position: sticky; top: 0; height: 100vh;` stays pinned beside the narrative throughout user scroll.
+       - **3D Concentric Rotating Chrono Tunnel (`.story__bg-canvas`)**:
+         - HTML5 Canvas rendering 14 concentric time dials with radial clock hour ticks and hands that rotate in 3D perspective as you scroll (`camZ` and `spin`).
+         - Drifting stardust particles rendered in whisper pinkish-lavender (`#F5D0FE`) and soft graphite.
+       - **Eyebrow**: Monospace tag `CAREER CHRONICLE // MY STORY` with emerald pulsing live beacon.
+       - **Editorial Headline**: "Tracing the trajectory."
+       - **Mechanical Rolling Year Digits (Odometer)**:
+         - Tabular numerals (`clamp(5.5rem, 9.5vw, 9.5rem)`) showing the year (`2026`, `2025`, `2024`).
+         - 4 digit columns (`.story__digit-col`) with staggered CSS translateY transform driven by `cubic-bezier(0.65, 0, 0.2, 1)` that smoothly rolls the digits when the active chapter changes!
+       - **Active Tenure Chip**: Monospace uppercase badge with calendar icon updating dynamically (`AUG 2026 — PRESENT`, etc.).
+       - **Chrono Progress Meter**:
+         - Circular rewind clock SVG icon rotating with scroll progress (`p * -720deg`).
+         - Counter indicator: `01 / 04`, `02 / 04`, `03 / 04`, `04 / 04`.
+         - High-precision progress bar scaling with scroll percentage.
+     - **Right Column: Natural Scrolling Storyline (`.story__line`)**:
+       - Native natural scroll (NO hijacked scroll lock, zero stutter).
+       - Timeline Rail (`.story__rail`) with dynamic travelled gradient trail (`.story__tail`).
+       - Sticky Travelling Focal Dot (`.story__travel-dot`) riding `top: 50vh`, tracking down the rail and highlighting the chapter passing the viewport center.
+       - **4 Liquid Glass Chapter Cards**:
+         - Active chapter gets full opacity `1.0`, illuminated specular rim, and pinkish-lavender glow.
+         - Inactive chapters sit at muted editorial ash `0.38`.
+         - Chapter 1: Imperial Info System (Full Stack Developer, Aug 2026 — Present, Current Enterprise Role)
+         - Chapter 2: Agile Infotech (Python Full Stack Intern, June 2025 — July 2025, 3 Full Stack Apps)
+         - Chapter 3: Ak Info Park (Full Stack Web Development Intern, Feb 2025, 15% Latency Boost)
+         - Chapter 4: Srishti Innovative Computer Systems (Python & Data Analysis Intern, Feb 2024 — Mar 2024, Visual Analytics)
+         - Includes Key Deliverable & Impact callouts, responsibilities, and `TechLogo` tags.
+  3. **Verification**:
+     - `npm run build` passed with exit code 0 (`tsc -b && vite build`).
+     - Dev server verified on `http://localhost:5173/` (HTTP 200).
+     - Sections 1, 2, and 3 remain preserved and fully operational.
