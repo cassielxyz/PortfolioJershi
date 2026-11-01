@@ -615,3 +615,35 @@ A modern, high-performance portfolio for **Jershika C**, an Honors Computer Scie
   6. **Verification**:
      - `npm run build` passed with exit code 0 (`tsc -b && vite build`).
      - Dev server active at `http://localhost:5173/`.
+
+
+---
+
+### #28. Creative Elastic Wire Pull Switch Contact Stage, AI Artifacts Removal, Skills Sticky Stage Fix, and Motion Polish
+- **Date**: 2026-11-02
+- **Driver**: User requested removing AI sparkle artifacts from the projects section, making the contact section creative with no standard headings and only a big "Pull this" text with an arrow and interactive elastic pull cord plug/switch that triggers a creative contact popup, fixing the skills section sticky/fixed pin that got disturbed by root overflow, and adding seamless in-animations, parallax, and text motion across all sections.
+- **Deliverables & Architectural Decisions**:
+  1. **Skills Section Fixed Pin Restoration (`src/index.css`)**:
+     - Reverted `overflow-x: hidden; max-width: 100vw;` on `html`, which had broken CSS `position: sticky` on child elements in Chromium browsers.
+     - Confirmed `src/components/Skills.tsx` sticky runway stays 100% pinned ("fixed") in the center of the viewport until all 16 cards are revealed.
+  2. **AI Artifacts Removal (`src/components/Projects.tsx`)**:
+     - Removed the `Sparkles` icon from the project category chip shown in the user's screenshot.
+     - Replaced with a minimal, authentic engineering circular status indicator (`.category-live-dot`).
+  3. **High-Concept "Pull this." Interactive Contact Stage (`src/components/Contact.tsx`)**:
+     - **No Standard Headings**: Completely eliminated conventional section titles and numbers.
+     - **Sculptural Editorial Lockup**: Bold "Pull this." in `Bodoni Moda` / `Instrument Serif` italic with animated curved arrow pointing toward the hanging cord.
+     - **Verlet Physics Elastic Pull-Cord**:
+       - Reverse-engineered from Rishi Thakor's physics engine (`N = 24` segments, $G = 4400$ px/s², 14 constraint relaxation passes).
+       - Spring-damper anchor elongation with rubbery end-stop resistance.
+       - Turned obsidian teardrop knob with brass ferrule, ambient grain lines, specular gleam, and realistic wall drop shadow.
+       - Interactive pointer drag with pointer capture, plus tap/click tug animation.
+       - Synthesized Web Audio API mechanical switch relay click and vibration haptics on trigger.
+     - **Creative Full-Stage Contact Popup**:
+       - Pulling the cord past threshold (or tapping the knob) opens a full Apple Liquid Glass contact dossier.
+       - Displays direct contact channels (email, phone, location with 1-click clipboard copy), GitHub and LinkedIn links, and an interactive message form.
+       - Smooth exit back to the "Pull this" stage upon clicking Close, backdrop, or pressing Escape.
+  4. **Universal In-Animations & Parallax Motion Polish**:
+     - Added smooth Framer Motion in-view scroll reveals (`whileInView`, `viewport={{ once: true }}`) and staggered timing across Projects, Education, Certifications, and Contact.
+  5. **Verification**:
+     - `npm run build` passed with exit code 0 (`tsc -b && vite build`).
+     - Dev server verified active at `http://localhost:5173/` (HTTP 200).

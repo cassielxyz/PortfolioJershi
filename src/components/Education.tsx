@@ -238,8 +238,14 @@ export const Education: React.FC = () => {
 
       <div className="education-wrapper">
         
-        {/* Section Header */}
-        <div className="education-header">
+        {/* Section Header with smooth in-animation */}
+        <motion.div 
+          className="education-header"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        >
           <div className="education-eyebrow">
             <span className="education-eyebrow-dot" />
             <span>05 // Academic Record & Foundations</span>
@@ -253,7 +259,7 @@ export const Education: React.FC = () => {
             Core foundations in Computer Science engineering, object-oriented systems, 
             data structures, and analytical problem solving.
           </p>
-        </div>
+        </motion.div>
 
         {/* Education Grid */}
         <div className="education-grid">

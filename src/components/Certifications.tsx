@@ -407,7 +407,14 @@ export const Certifications: React.FC = () => {
       <div className="cert-container">
         
         {/* Section Header */}
-        <div className="cert-header">
+        {/* Section Header with smooth in-animation */}
+        <motion.div 
+          className="cert-header"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        >
           <div className="cert-eyebrow">
             <span className="cert-eyebrow-dot" />
             <span>06 // Continuous Learning & Mastery</span>
@@ -421,7 +428,7 @@ export const Certifications: React.FC = () => {
             Specialized intensive training programs in modern Java full-stack technologies, 
             Spring Boot microservices, and reactive frontend architectures.
           </p>
-        </div>
+        </motion.div>
 
         {/* Certificate Shell */}
         <motion.div 

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { 
   ArrowUpRight, 
-  Sparkles, 
   CheckCircle2
 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -299,7 +298,7 @@ export const Projects: React.FC = () => {
         .project-category-chip {
           display: inline-flex;
           align-items: center;
-          gap: 0.35rem;
+          gap: 0.45rem;
           padding: 0.25rem 0.75rem;
           background: rgba(245, 208, 254, 0.3);
           border: 1px solid rgba(245, 208, 254, 0.7);
@@ -308,6 +307,13 @@ export const Projects: React.FC = () => {
           font-size: 0.72rem;
           font-weight: 700;
           color: #4A1D96;
+        }
+
+        .category-live-dot {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: #9333EA;
         }
 
         .project-metric-text {
@@ -547,9 +553,15 @@ export const Projects: React.FC = () => {
       <div className="projects-wrapper">
         
         {/* =========================================================
-            SECTION HEADER: Matching previous fonts
+            SECTION HEADER: Matching previous fonts with scroll reveal
             ========================================================= */}
-        <div className="projects-header">
+        <motion.div 
+          className="projects-header"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+        >
           <div className="projects-eyebrow">
             <span className="projects-eyebrow-dot" />
             <span>04 // Selected Codebases & Architectures</span>
@@ -563,13 +575,19 @@ export const Projects: React.FC = () => {
             Interactive roadmap featuring full-stack applications, 
             educational portals, and computer vision pipelines.
           </p>
-        </div>
+        </motion.div>
 
         {/* =========================================================
            SPLIT STAGE: CONNECTED NODES ROADMAP (LEFT) + DOSSIER (RIGHT)
-           Fits cleanly on screen
+           Fits cleanly on screen with parallax entrance
            ========================================================= */}
-        <div className="projects-stage-split">
+        <motion.div 
+          className="projects-stage-split"
+          initial={{ opacity: 0, y: 36 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        >
           
           {/* LEFT: CONNECTED NODES CIRCUIT (A dot sits near when clicked) */}
           <div className="nodes-circuit-column">
@@ -618,15 +636,15 @@ export const Projects: React.FC = () => {
           {/* RIGHT: SPOTLIGHT PROJECT DOSSIER & VIEWPORT PREVIEW */}
           <motion.div 
             key={activeProject.id}
-            initial={{ opacity: 0, x: 12 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, x: 18, scale: 0.98 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
             className="spotlight-project-dossier"
           >
             <div>
               <div className="project-dossier-top">
                 <span className="project-category-chip">
-                  <Sparkles size={12} />
+                  <span className="category-live-dot" />
                   <span>{activeProject.categoryLabel}</span>
                 </span>
                 <span className="project-metric-text">
@@ -715,7 +733,7 @@ export const Projects: React.FC = () => {
             </div>
           </motion.div>
 
-        </div>
+        </motion.div>
 
       </div>
     </section>
