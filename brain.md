@@ -495,3 +495,36 @@ A modern, high-performance portfolio for **Jershika C**, an Honors Computer Scie
      - `npm run build` compiled with code 0 (`tsc -b && vite build`).
      - Dev server running on `http://localhost:5173/`.
      - Hero portrait water ripple color reveal and all 3 sections are fully functional.
+
+---
+
+### #24. Creative Experience Section Architecture (`cortex-taste` & Apple Liquid Glass)
+- **Date**: 2026-11-02
+- **Driver**: Implemented the next section (Experience) according to user specifications: creative layout, animations, scroll effects, Black, Ash, White theme with minimal whisper pinkish-lavender accents, and Apple Liquid Glass components adhering strictly to `cortex-taste`.
+- **Deliverables & Architectural Decisions**:
+  1. **Aesthetic & Color Palette**:
+     - Deep obsidian charcoal (`#121118`, `#14131A`), refined ash neutrals (`#26242E`, `#63606E`, `#8E8B99`, `#E5E3EB`), and pure museum white (`#FFFFFF`).
+     - Minimal whisper light pinkish-lavender accents (`#F5D0FE`, `#FAF7FC`) on badges, specular glare lines, and glowing photon trails.
+  2. **Editorial Typography**:
+     - Monospace eyebrow: `03 / PROFESSIONAL TRAJECTORY & EXPERIENCE`.
+     - Display heading: "Professional Experience &" in bold modern sans, "Engineering Milestones" in *Playfair Display* italic with ash-to-lavender gradient.
+  3. **Apple Liquid Glass Segmented Control Dock**:
+     - visionOS frosted liquid glass dock (`backdrop-filter: blur(24px) saturate(200%)`).
+     - Segmented filters: All Milestones (4), Production & Enterprise (1), Engineering Internships (3).
+     - Floating active pill with specular top reflection and ambient glow.
+  4. **Continuous Timeline Track & Animated Traveling Light Photon Beam**:
+     - Vertical timeline spine track with traveling gradient light beam (`animation: spinePhotonBeam 3.6s infinite`).
+     - Live Pulsing Orbital Node on current role (Imperial Info System): Active emerald beacon with radial radar pulse rings (`animation: nodePulseRing 2.4s infinite`).
+     - Ash & frosted nodes for completed internships with interactive scale hover effects.
+  5. **Apple Liquid Glass Specimen Cards**:
+     - High-density frosted glass blur (`backdrop-filter: blur(28px) saturate(190%)`).
+     - Hairline specular highlight glare (`inset 0 1.5px 2px rgba(255, 255, 255, 0.95)`).
+     - Role titles, verified achievement checkmarks (`#16A34A`), and authentic brand vector tech deployed pills via `TechLogo` (React, Python, REST APIs, MongoDB, HTML5, JavaScript, etc.).
+  6. **Interactive Expandable Architecture Drawers**:
+     - Frosted toggle pill with rotating chevron (`System Architecture & Engineering Impact`).
+     - Framer Motion `AnimatePresence` height transition revealing deep architectural summaries, key system outcomes, and core deliverables without cluttering initial view.
+  7. **Preservation of Sections 1, 2, and 3**:
+     - Section 1 (Hero portrait ripple color reveal canvas), Section 2 (About terminal & metrics bento), and Section 3 (Skills native pinned sticky runway card deck) remain 100% UNTOUCHED and fully functional.
+  8. **Verification**:
+     - `npm run build` (`tsc -b && vite build`) compiled cleanly with exit code 0.
+     - Live dev server verified on `http://localhost:5173/`.

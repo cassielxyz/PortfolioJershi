@@ -9,6 +9,11 @@ export interface ExperienceItem {
   responsibilities: string[];
   techStack: string[];
   highlightBadge?: string;
+  architectureDetails?: {
+    summary: string;
+    outcomes: string[];
+    keyDeliverable: string;
+  };
 }
 
 export interface ProjectItem {
