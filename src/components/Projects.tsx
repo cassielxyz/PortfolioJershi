@@ -1,83 +1,277 @@
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import * as THREE from 'three';
 import { 
+  ArrowUpRight, 
   Sparkles, 
-  ArrowUpRight,
-  Eye,
-  ShieldCheck
+  ChevronLeft, 
+  ChevronRight,
+  CheckCircle2,
+  Layers
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { projects } from '../data/portfolioData';
-import type { ProjectItem } from '../types';
-import { ProjectModal } from './ProjectModal';
 import { GithubIcon } from './Icons';
 import { TechLogo } from './TechLogos';
 
-type CategoryFilter = 'all' | 'java' | 'frontend' | 'ml';
-
 export const Projects: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState<CategoryFilter>('all');
-  const [selectedProjectId, setSelectedProjectId] = useState<string>(projects[0].id);
-  const [modalProject, setModalProject] = useState<ProjectItem | null>(null);
+  const [activeIdx, setActiveIdx] = useState<number>(0);
+  const mountRef = useRef<HTMLDivElement>(null);
 
-  const filteredProjects = projects.filter((p) => {
-    if (activeCategory === 'all') return true;
-    if (activeCategory === 'java') return p.category === 'java';
-    if (activeCategory === 'frontend') return p.category === 'frontend' || p.category === 'fullstack';
-    if (activeCategory === 'ml') return p.category === 'ml';
-    return true;
-  });
+  const activeProject = projects[activeIdx] || projects[0];
 
-  // Current active spotlight project
-  const activeProject = projects.find((p) => p.id === selectedProjectId) || filteredProjects[0] || projects[0];
-  const activeIndex = projects.findIndex((p) => p.id === activeProject.id);
-
-  const handleOpenLink = (url?: string) => {
-    const targetUrl = url || activeProject.githubUrl || 'https://github.com/jershika26';
-    window.open(targetUrl, '_blank', 'noopener,noreferrer');
+  const handleNext = () => {
+    setActiveIdx((prev) => (prev + 1) % projects.length);
   };
 
+  const handlePrev = () => {
+    setActiveIdx((prev) => (prev - 1 + projects.length) % projects.length);
+  };
+
+  const handleOpenLink = (url?: string) => {
+    const target = url || activeProject.liveUrl || activeProject.githubUrl || 'https://github.com/jershika26';
+    window.open(target, '_blank', 'noopener,noreferrer');
+  };
+
+  // -------------------------------------------------------------
+  // THREE.JS: Interactive 3D Tree Diagram with Branching Nodes
+  // -------------------------------------------------------------
+  useEffect(() => {
+    const container = mountRef.current;
+    if (!container) return;
+
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    // 1. Scene & Camera
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+    camera.position.set(0, 0.8, 7.5);
+
+    // 2. WebGL Renderer
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    // 3. Tree Geometry & Materials
+    const trunkGroup = new THREE.Group();
+    scene.add(trunkGroup);
+
+    // Main Vertical Organic Trunk
+    const trunkCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, -2.6, 0),
+      new THREE.Vector3(0.1, -1.2, 0.1),
+      new THREE.Vector3(-0.1, 0.2, -0.1),
+      new THREE.Vector3(0.05, 1.4, 0.05),
+      new THREE.Vector3(0, 2.4, 0)
+    ]);
+    const trunkGeo = new THREE.TubeGeometry(trunkCurve, 40, 0.08, 12, false);
+    const trunkMat = new THREE.MeshBasicMaterial({ color: 0x26242E, transparent: true, opacity: 0.85 });
+    const trunkMesh = new THREE.Mesh(trunkGeo, trunkMat);
+    trunkGroup.add(trunkMesh);
+
+    // 4 Project Branches & Nodes
+    // Project 0 (LSE): Left-mid
+    // Project 1 (Mydoo): Right-mid
+    // Project 2 (House of Greens): Left-high
+    // Project 3 (Underwater): Right-high
+    const branchConfigs = [
+      { start: new THREE.Vector3(0.05, -1.2, 0), end: new THREE.Vector3(-1.85, -0.7, 0.4), color: 0x9333EA },
+      { start: new THREE.Vector3(-0.05, -0.3, 0), end: new THREE.Vector3(1.95, 0.2, 0.5), color: 0xEC4899 },
+      { start: new THREE.Vector3(0.02, 0.6, 0), end: new THREE.Vector3(-1.75, 1.1, 0.3), color: 0x10B981 },
+      { start: new THREE.Vector3(0.01, 1.5, 0), end: new THREE.Vector3(1.85, 1.8, 0.4), color: 0x06B6D4 }
+    ];
+
+    const nodeMeshes: THREE.Mesh[] = [];
+    const ringMeshes: THREE.Mesh[] = [];
+
+    branchConfigs.forEach((b, i) => {
+      // Branch curve
+      const mid = new THREE.Vector3()
+        .addVectors(b.start, b.end)
+        .multiplyScalar(0.5)
+        .add(new THREE.Vector3(i % 2 === 0 ? -0.2 : 0.2, 0.2, 0));
+      const branchCurve = new THREE.CatmullRomCurve3([b.start, mid, b.end]);
+      const branchGeo = new THREE.TubeGeometry(branchCurve, 25, 0.045, 10, false);
+      const branchMat = new THREE.MeshBasicMaterial({ color: 0x3E3A49, transparent: true, opacity: 0.7 });
+      const branchMesh = new THREE.Mesh(branchGeo, branchMat);
+      trunkGroup.add(branchMesh);
+
+      // Node Sphere
+      const sphereGeo = new THREE.SphereGeometry(0.24, 24, 24);
+      const sphereMat = new THREE.MeshBasicMaterial({ 
+        color: 0x121118,
+        transparent: true,
+        opacity: 0.95
+      });
+      const nodeMesh = new THREE.Mesh(sphereGeo, sphereMat);
+      nodeMesh.position.copy(b.end);
+      nodeMesh.userData = { projectIndex: i };
+      trunkGroup.add(nodeMesh);
+      nodeMeshes.push(nodeMesh);
+
+      // Concentric Orbital Ring
+      const ringGeo = new THREE.RingGeometry(0.32, 0.36, 32);
+      const ringMat = new THREE.MeshBasicMaterial({ 
+        color: 0xF5D0FE, 
+        side: THREE.DoubleSide, 
+        transparent: true, 
+        opacity: 0.4 
+      });
+      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      ringMesh.position.copy(b.end);
+      trunkGroup.add(ringMesh);
+      ringMeshes.push(ringMesh);
+    });
+
+    // Ambient floating stardust particles
+    const particleCount = 75;
+    const particleGeo = new THREE.BufferGeometry();
+    const posArr = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount * 3; i += 3) {
+      posArr[i] = (Math.random() - 0.5) * 6;
+      posArr[i + 1] = (Math.random() - 0.5) * 5;
+      posArr[i + 2] = (Math.random() - 0.5) * 4;
+    }
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
+    const particleMat = new THREE.PointsMaterial({
+      size: 0.04,
+      color: 0xF5D0FE,
+      transparent: true,
+      opacity: 0.6
+    });
+    const particles = new THREE.Points(particleGeo, particleMat);
+    scene.add(particles);
+
+    // 4. Raycaster for 3D Node Clicks
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    const onPointerDown = (e: MouseEvent) => {
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+
+      const intersects = raycaster.intersectObjects(nodeMeshes);
+      if (intersects.length > 0) {
+        const idx = intersects[0].object.userData.projectIndex;
+        if (typeof idx === 'number') {
+          setActiveIdx(idx);
+        }
+      }
+    };
+    renderer.domElement.addEventListener('pointerdown', onPointerDown);
+
+    // 5. Animation Loop
+    let animId: number;
+    let clock = new THREE.Clock();
+
+    const animate = () => {
+      animId = requestAnimationFrame(animate);
+      const elapsedTime = clock.getElapsedTime();
+
+      // Gentle continuous ambient sway
+      trunkGroup.rotation.y = Math.sin(elapsedTime * 0.4) * 0.12;
+
+      // Update Node States based on activeIdx
+      nodeMeshes.forEach((node, i) => {
+        const isActive = i === activeIdx;
+        const scaleTarget = isActive ? 1.35 : 1.0;
+        node.scale.lerp(new THREE.Vector3(scaleTarget, scaleTarget, scaleTarget), 0.1);
+
+        const mat = node.material as THREE.MeshBasicMaterial;
+        mat.color.set(isActive ? 0xF5D0FE : 0x121118);
+
+        // Orbital ring rotation
+        const ring = ringMeshes[i];
+        ring.rotation.z += 0.02 * (i % 2 === 0 ? 1 : -1);
+        const ringMat = ring.material as THREE.MeshBasicMaterial;
+        ringMat.opacity = isActive ? 0.9 : 0.25;
+      });
+
+      // Target camera framing toward active node position smoothly
+      const targetPos = branchConfigs[activeIdx]?.end || new THREE.Vector3(0, 0, 0);
+      const camTargetX = targetPos.x * 0.25;
+      const camTargetY = targetPos.y * 0.25 + 0.3;
+      camera.position.x += (camTargetX - camera.position.x) * 0.05;
+      camera.position.y += (camTargetY - camera.position.y) * 0.05;
+      camera.lookAt(0, 0.4, 0);
+
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    // Resize Handler
+    const handleResize = () => {
+      if (!container) return;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+    window.addEventListener('resize', handleResize);
+
+    // 6. Cleanup
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', handleResize);
+      renderer.domElement.removeEventListener('pointerdown', onPointerDown);
+      if (renderer.domElement.parentNode) {
+        renderer.domElement.parentNode.removeChild(renderer.domElement);
+      }
+      renderer.dispose();
+      trunkGeo.dispose();
+      trunkMat.dispose();
+      particleGeo.dispose();
+      particleMat.dispose();
+    };
+  }, [activeIdx]);
+
   return (
-    <section id="projects" className="projects-creative-section">
+    <section id="projects" className="projects-showcase-section">
       <style>{`
         /* =========================================================
-           PROJECTS SHOWCASE: BESPOKE APPLE LIQUID GLASS
-           Palette: Obsidian Black, Ash Neutrals, Whisper Lavender, Crisp White
+           PROJECTS SHOWCASE: BESPOKE 3D TREE & SLEEK VIEWPORT
+           Theme: Black, Ash, Crisp White, Minimal Whisper Lavender
            ========================================================= */
-        .projects-creative-section {
+        .projects-showcase-section {
           position: relative;
           width: 100%;
-          min-height: 100vh;
           background: #FAF7FC;
           background-image: 
-            radial-gradient(ellipse 60% 50% at 85% 20%, rgba(245, 208, 254, 0.35) 0%, transparent 70%),
-            radial-gradient(ellipse 50% 45% at 10% 80%, rgba(230, 215, 245, 0.3) 0%, transparent 70%),
+            radial-gradient(ellipse 55% 45% at 85% 15%, rgba(245, 208, 254, 0.3) 0%, transparent 70%),
+            radial-gradient(ellipse 45% 40% at 15% 85%, rgba(230, 215, 245, 0.25) 0%, transparent 70%),
             repeating-linear-gradient(42deg, rgba(38, 36, 46, 0.016) 0 1px, transparent 1px 12px),
             linear-gradient(180deg, #FAF7FC 0%, #F5F3F8 50%, #FAF7FC 100%);
-          padding: 6.5rem 1.5rem 7.5rem 1.5rem;
+          border-top: 1px solid rgba(38, 36, 46, 0.08);
+          padding: 5rem 1.5rem 5.5rem 1.5rem;
           box-sizing: border-box;
           color: #121118;
           overflow: hidden;
         }
 
-        .projects-container {
-          max-width: 1280px;
+        .projects-wrapper {
+          max-width: 1240px;
           margin: 0 auto;
           position: relative;
           z-index: 1;
         }
 
-        /* Section Header */
+        /* Section Header: Matching previous fonts */
         .projects-header {
           text-align: center;
           max-width: 760px;
-          margin: 0 auto 3.5rem auto;
+          margin: 0 auto 2.75rem auto;
         }
 
         .projects-eyebrow {
           display: inline-flex;
           align-items: center;
           gap: 0.5rem;
-          padding: 0.35rem 0.9rem;
+          padding: 0.35rem 0.85rem;
           background: rgba(255, 255, 255, 0.85);
           border: 1px solid rgba(38, 36, 46, 0.1);
           border-radius: 9999px;
@@ -88,8 +282,7 @@ export const Projects: React.FC = () => {
           text-transform: uppercase;
           color: #63606E;
           backdrop-filter: blur(12px);
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-          margin-bottom: 1rem;
+          margin-bottom: 0.85rem;
         }
 
         .projects-eyebrow-dot {
@@ -102,182 +295,317 @@ export const Projects: React.FC = () => {
 
         .projects-title {
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Plus Jakarta Sans", sans-serif;
-          font-size: clamp(2.4rem, 4.2vw, 3.6rem);
+          font-size: clamp(2.2rem, 3.8vw, 3.2rem);
           font-weight: 800;
-          line-height: 1.05;
+          line-height: 1.08;
           letter-spacing: -0.035em;
           color: #121118;
-          margin: 0 0 1rem 0;
+          margin: 0 0 0.75rem 0;
         }
 
         .projects-subtitle {
-          font-size: 1rem;
-          line-height: 1.6;
+          font-size: 0.9375rem;
+          line-height: 1.55;
           color: #63606E;
           margin: 0 auto;
-          max-width: 580px;
-        }
-
-        /* Segmented Filter Dock */
-        .projects-filter-dock {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          flex-wrap: wrap;
-          margin-bottom: 3.5rem;
-        }
-
-        .filter-btn {
-          position: relative;
-          padding: 0.55rem 1.15rem;
-          background: rgba(255, 255, 255, 0.7);
-          border: 1px solid rgba(38, 36, 46, 0.08);
-          border-radius: 9999px;
-          font-size: 0.8125rem;
-          font-weight: 600;
-          color: #63606E;
-          cursor: pointer;
-          backdrop-filter: blur(16px);
-          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .filter-btn:hover {
-          color: #121118;
-          border-color: rgba(38, 36, 46, 0.2);
-          background: rgba(255, 255, 255, 0.95);
-        }
-
-        .filter-btn.active {
-          color: #FFFFFF;
-          background: #121118;
-          border-color: #121118;
-          box-shadow: 0 4px 16px rgba(18, 17, 24, 0.2);
+          max-width: 540px;
         }
 
         /* =========================================================
-           SPOTLIGHT STAGE (SPLIT SPEC & VIEWPORT PREVIEW)
+           SPLIT STAGE: 3D THREE.JS TREE DIAGRAM + SPOTLIGHT CARD
+           Fits cleanly inside normal viewport height
            ========================================================= */
-        .spotlight-stage {
+        .tree-stage-split {
           display: grid;
-          grid-template-columns: minmax(360px, 1fr) minmax(420px, 1.25fr);
-          gap: 2.5rem;
-          align-items: stretch;
-          margin-bottom: 3.5rem;
+          grid-template-columns: minmax(320px, 1fr) minmax(380px, 1.2fr);
+          gap: 2.25rem;
+          align-items: center;
+          min-height: 500px;
+          max-height: 540px;
+          margin-bottom: 2.5rem;
         }
 
-        /* Left Column: Dossier Card */
-        .dossier-card {
+        /* 3D Tree Canvas Container */
+        .threejs-tree-canvas-container {
           position: relative;
+          width: 100%;
+          height: 100%;
+          min-height: 480px;
+          background: rgba(255, 255, 255, 0.6);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(38, 36, 46, 0.1);
+          border-radius: 24px;
+          overflow: hidden;
+          box-shadow: 
+            0 16px 36px -12px rgba(20, 19, 26, 0.06),
+            inset 0 1.5px 2px rgba(255, 255, 255, 0.95);
+        }
+
+        .tree-canvas-badge {
+          position: absolute;
+          top: 1rem;
+          left: 1.25rem;
+          z-index: 10;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          padding: 0.3rem 0.75rem;
+          background: rgba(255, 255, 255, 0.85);
+          border: 1px solid rgba(38, 36, 46, 0.08);
+          border-radius: 9999px;
+          font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+          font-size: 0.6875rem;
+          font-weight: 600;
+          color: #63606E;
+          pointer-events: none;
+        }
+
+        .tree-nav-controls {
+          position: absolute;
+          bottom: 1rem;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 10;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: rgba(255, 255, 255, 0.9);
+          backdrop-filter: blur(16px);
+          border: 1px solid rgba(38, 36, 46, 0.1);
+          border-radius: 9999px;
+          padding: 0.3rem 0.6rem;
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+        }
+
+        .tree-nav-btn {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          background: transparent;
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          color: #121118;
+          transition: background 0.2s ease;
+        }
+
+        .tree-nav-btn:hover {
+          background: rgba(38, 36, 46, 0.08);
+        }
+
+        .tree-nav-indicator {
+          font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+          font-size: 0.75rem;
+          font-weight: 700;
+          color: #121118;
+          padding: 0 0.4rem;
+        }
+
+        /* Right Column: Project Showcase Window */
+        .spotlight-project-dossier {
+          position: relative;
+          height: 100%;
+          min-height: 480px;
           background: rgba(255, 255, 255, 0.88);
           backdrop-filter: blur(28px) saturate(190%);
-          -webkit-backdrop-filter: blur(28px) saturate(190%);
           border: 1px solid rgba(38, 36, 46, 0.12);
-          border-radius: 28px;
-          padding: 2.5rem 2.25rem;
+          border-radius: 24px;
+          padding: 2rem 2.25rem;
           box-shadow: 
             0 20px 48px -12px rgba(20, 19, 26, 0.08),
             inset 0 1.5px 2px rgba(255, 255, 255, 0.95);
           display: flex;
           flex-direction: column;
           justify-content: space-between;
+          box-sizing: border-box;
         }
 
-        .dossier-top-meta {
+        .project-dossier-top {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 1.25rem;
+          margin-bottom: 0.85rem;
         }
 
-        .dossier-index-badge {
-          font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-          font-size: 0.8125rem;
-          font-weight: 700;
-          color: #8E8B99;
-          letter-spacing: 0.1em;
-        }
-
-        .dossier-metric-pill {
+        .project-category-chip {
           display: inline-flex;
           align-items: center;
-          gap: 0.4rem;
-          padding: 0.3rem 0.85rem;
+          gap: 0.35rem;
+          padding: 0.25rem 0.75rem;
           background: rgba(245, 208, 254, 0.3);
           border: 1px solid rgba(245, 208, 254, 0.7);
           border-radius: 9999px;
-          font-size: 0.75rem;
+          font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+          font-size: 0.72rem;
           font-weight: 700;
           color: #4A1D96;
         }
 
-        .dossier-title {
-          font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+        .project-metric-text {
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: #63606E;
+        }
+
+        .project-dossier-title {
+          font-size: 1.65rem;
           font-weight: 800;
           line-height: 1.15;
-          letter-spacing: -0.03em;
+          letter-spacing: -0.025em;
           color: #121118;
-          margin: 0 0 0.5rem 0;
+          margin: 0 0 0.35rem 0;
         }
 
-        .dossier-subtitle {
-          font-size: 0.9375rem;
-          line-height: 1.45;
-          color: #63606E;
-          margin: 0 0 1.25rem 0;
-          font-weight: 500;
-        }
-
-        .dossier-desc {
+        .project-dossier-subtitle {
           font-size: 0.875rem;
-          line-height: 1.6;
-          color: #26242E;
-          margin: 0 0 1.5rem 0;
+          font-weight: 500;
+          color: #63606E;
+          margin: 0 0 0.85rem 0;
         }
 
-        .dossier-highlights-list {
-          list-style: none;
-          margin: 0 0 1.75rem 0;
-          padding: 0;
+        .project-dossier-desc {
+          font-size: 0.875rem;
+          line-height: 1.55;
+          color: #26242E;
+          margin: 0 0 1.25rem 0;
+        }
+
+        /* Interactive Viewport Screen Preview (Clickable) */
+        .project-preview-mockup-frame {
+          position: relative;
+          width: 100%;
+          height: 160px;
+          background: #14131A;
+          border: 1px solid rgba(38, 36, 46, 0.2);
+          border-radius: 14px;
+          overflow: hidden;
+          cursor: pointer;
+          margin-bottom: 1.25rem;
+          transition: transform 0.25s ease, box-shadow 0.25s ease;
           display: flex;
           flex-direction: column;
-          gap: 0.65rem;
         }
 
-        .dossier-highlight-item {
-          position: relative;
-          padding-left: 1.25rem;
-          font-size: 0.8125rem;
-          line-height: 1.5;
-          color: #403C3C;
+        .project-preview-mockup-frame:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25), 0 0 20px rgba(245, 208, 254, 0.2);
         }
 
-        .dossier-highlight-item::before {
-          content: "";
-          position: absolute;
-          left: 0;
-          top: 0.45rem;
-          width: 5px;
-          height: 5px;
-          border-radius: 1px;
-          background: #121118;
-          transform: rotate(45deg);
-        }
-
-        .dossier-tags-row {
+        .preview-chrome-bar {
+          background: #1A1922;
+          padding: 0.45rem 0.85rem;
           display: flex;
-          flex-wrap: wrap;
-          gap: 0.45rem;
-          margin-bottom: 2rem;
-          padding-top: 1rem;
-          border-top: 1px solid rgba(38, 36, 46, 0.08);
+          align-items: center;
+          gap: 0.6rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .dossier-tag {
+        .preview-lights {
+          display: flex;
+          gap: 4px;
+        }
+
+        .preview-light {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+        }
+
+        .preview-light-red { background: #FF5F56; }
+        .preview-light-yellow { background: #FFBD2E; }
+        .preview-light-green { background: #27C93F; }
+
+        .preview-address-url {
+          flex: 1;
+          font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+          font-size: 0.6875rem;
+          color: #A19EB0;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .preview-screen-body {
+          flex: 1;
+          position: relative;
+          background: #0E0D12;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 1rem;
+        }
+
+        /* Hover Overlay on Mockup */
+        .preview-screen-overlay {
+          position: absolute;
+          inset: 0;
+          background: rgba(18, 17, 24, 0.45);
+          backdrop-filter: blur(3px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: opacity 0.25s ease;
+        }
+
+        .project-preview-mockup-frame:hover .preview-screen-overlay {
+          opacity: 1;
+        }
+
+        .preview-launch-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          padding: 0.45rem 1rem;
+          background: #FFFFFF;
+          color: #121118;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          font-weight: 700;
+          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Mockup Visual Identity per Project */
+        .mockup-inner-brand {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.4rem;
+          text-align: center;
+        }
+
+        .mockup-brand-title {
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: #FFFFFF;
+        }
+
+        .mockup-brand-badge {
           display: inline-flex;
           align-items: center;
           gap: 0.35rem;
-          padding: 0.25rem 0.65rem;
+          font-size: 0.6875rem;
+          padding: 0.2rem 0.55rem;
+          border-radius: 4px;
+          background: rgba(255, 255, 255, 0.08);
+          color: #F5D0FE;
+        }
+
+        /* Tech Tags */
+        .project-tech-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.4rem;
+          margin-bottom: 1.25rem;
+        }
+
+        .project-tech-tag {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.35rem;
+          padding: 0.25rem 0.6rem;
           background: #FFFFFF;
           border: 1px solid rgba(38, 36, 46, 0.1);
           border-radius: 6px;
@@ -286,385 +614,162 @@ export const Projects: React.FC = () => {
           color: #26242E;
         }
 
-        /* Action Buttons Row */
-        .dossier-actions {
+        /* Action Buttons */
+        .project-dossier-actions {
           display: flex;
           align-items: center;
           gap: 0.75rem;
-          flex-wrap: wrap;
         }
 
-        .btn-github-action {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.6rem;
-          padding: 0.7rem 1.35rem;
-          background: #121118;
-          color: #FFFFFF;
-          border: 1px solid #121118;
-          border-radius: 12px;
-          font-size: 0.875rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-          box-shadow: 0 4px 14px rgba(18, 17, 24, 0.18);
-        }
-
-        .btn-github-action:hover {
-          background: #26242E;
-          transform: translateY(-2px);
-          box-shadow: 0 8px 22px rgba(18, 17, 24, 0.28);
-        }
-
-        .btn-details-action {
+        .btn-live-launch {
           display: inline-flex;
           align-items: center;
           gap: 0.5rem;
-          padding: 0.7rem 1.2rem;
+          padding: 0.65rem 1.25rem;
+          background: #121118;
+          color: #FFFFFF;
+          border: 1px solid #121118;
+          border-radius: 10px;
+          font-size: 0.8125rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          box-shadow: 0 4px 12px rgba(18, 17, 24, 0.15);
+        }
+
+        .btn-live-launch:hover {
+          background: #26242E;
+          transform: translateY(-1px);
+        }
+
+        .btn-github-code {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.65rem 1.15rem;
           background: rgba(255, 255, 255, 0.9);
           color: #121118;
-          border: 1px solid rgba(38, 36, 46, 0.15);
-          border-radius: 12px;
-          font-size: 0.875rem;
+          border: 1px solid rgba(38, 36, 46, 0.14);
+          border-radius: 10px;
+          font-size: 0.8125rem;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s ease;
         }
 
-        .btn-details-action:hover {
+        .btn-github-code:hover {
           background: #FFFFFF;
           border-color: rgba(38, 36, 46, 0.3);
           transform: translateY(-1px);
         }
 
         /* =========================================================
-           RIGHT COLUMN: INTERACTIVE DEVICE VIEWPORT PREVIEW
+           THUMBNAIL PREVIEW SELECTOR STRIP
            ========================================================= */
-        .preview-viewport-window {
-          position: relative;
-          background: #14131A;
-          border: 1px solid rgba(38, 36, 46, 0.2);
-          border-radius: 28px;
-          overflow: hidden;
-          box-shadow: 
-            0 24px 60px -16px rgba(18, 17, 24, 0.25),
-            inset 0 1px 1px rgba(255, 255, 255, 0.15);
-          display: flex;
-          flex-direction: column;
-          cursor: pointer;
-          transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
-        }
-
-        .preview-viewport-window:hover {
-          transform: translateY(-3px);
-          border-color: rgba(245, 208, 254, 0.6);
-          box-shadow: 
-            0 32px 70px -16px rgba(18, 17, 24, 0.32),
-            0 0 32px rgba(245, 208, 254, 0.18),
-            inset 0 1px 1px rgba(255, 255, 255, 0.3);
-        }
-
-        /* Window Chrome */
-        .window-chrome {
-          background: #1A1922;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          padding: 0.85rem 1.25rem;
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-        }
-
-        .window-traffic-lights {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        }
-
-        .light-dot {
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-        }
-
-        .light-red { background: #FF5F56; }
-        .light-yellow { background: #FFBD2E; }
-        .light-green { background: #27C93F; }
-
-        .window-address-bar {
-          flex: 1;
-          background: rgba(0, 0, 0, 0.35);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 8px;
-          padding: 0.3rem 0.85rem;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-          font-size: 0.72rem;
-          color: #8E8B99;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-
-        .window-address-text {
-          color: #E2E0E8;
-          font-weight: 500;
-        }
-
-        /* Viewport Canvas Screen Stage */
-        .viewport-screen-stage {
-          position: relative;
-          flex: 1;
-          min-height: 440px;
-          background: #0E0D12;
-          padding: 2rem;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          overflow: hidden;
-        }
-
-        /* Click to Launch Floating Badge Overlay */
-        .viewport-hover-overlay {
-          position: absolute;
-          inset: 0;
-          background: rgba(14, 13, 18, 0.4);
-          backdrop-filter: blur(4px);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          opacity: 0;
-          transition: opacity 0.3s ease;
-          z-index: 20;
-        }
-
-        .preview-viewport-window:hover .viewport-hover-overlay {
-          opacity: 1;
-        }
-
-        .launch-pill-cta {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.6rem;
-          padding: 0.85rem 1.6rem;
-          background: rgba(255, 255, 255, 0.95);
-          color: #121118;
-          border-radius: 9999px;
-          font-size: 0.875rem;
-          font-weight: 700;
-          letter-spacing: 0.02em;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-          transform: translateY(8px);
-          transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .preview-viewport-window:hover .launch-pill-cta {
-          transform: translateY(0);
-        }
-
-        /* Mockup Visualizations for Each System */
-        .mockup-canvas-wrapper {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
+        .projects-thumbnail-deck {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
           gap: 1.25rem;
         }
 
-        .mockup-header-bar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 12px;
-          padding: 0.85rem 1.25rem;
-        }
-
-        .mockup-stats-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 1rem;
-        }
-
-        .mockup-stat-card {
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.06);
-          border-radius: 14px;
-          padding: 1rem;
-          display: flex;
-          flex-direction: column;
-          gap: 0.35rem;
-        }
-
-        .mockup-stat-val {
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: #FFFFFF;
-          font-variant-numeric: tabular-nums;
-        }
-
-        .mockup-stat-label {
-          font-size: 0.6875rem;
-          color: #8E8B99;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-        }
-
-        .mockup-data-board {
-          flex: 1;
-          background: rgba(255, 255, 255, 0.02);
-          border: 1px solid rgba(255, 255, 255, 0.06);
-          border-radius: 16px;
-          padding: 1.25rem;
-          display: flex;
-          flex-direction: column;
-          gap: 0.75rem;
-        }
-
-        .mockup-row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0.65rem 0.85rem;
-          background: rgba(255, 255, 255, 0.03);
-          border-radius: 8px;
-          font-size: 0.75rem;
-          color: #C7C4D0;
-        }
-
-        .mockup-pill-green {
-          padding: 0.2rem 0.5rem;
-          background: rgba(39, 201, 63, 0.15);
-          border: 1px solid rgba(39, 201, 63, 0.3);
-          border-radius: 4px;
-          color: #27C93F;
-          font-size: 0.65rem;
-          font-weight: 600;
-        }
-
-        /* =========================================================
-           HORIZONTAL QUICK-SWITCH STRIP
-           ========================================================= */
-        .projects-deck-strip {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-          gap: 1.25rem;
-        }
-
-        .deck-item-card {
-          position: relative;
+        .thumbnail-card-item {
           background: rgba(255, 255, 255, 0.75);
-          backdrop-filter: blur(20px);
+          backdrop-filter: blur(16px);
           border: 1px solid rgba(38, 36, 46, 0.1);
-          border-radius: 18px;
-          padding: 1.25rem;
+          border-radius: 16px;
+          padding: 1rem 1.15rem;
           cursor: pointer;
           transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
           display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          min-height: 140px;
+          align-items: center;
+          gap: 0.85rem;
         }
 
-        .deck-item-card:hover {
-          transform: translateY(-3px);
+        .thumbnail-card-item:hover {
+          transform: translateY(-2px);
           border-color: rgba(38, 36, 46, 0.25);
           background: rgba(255, 255, 255, 0.95);
         }
 
-        .deck-item-card.is-active-card {
+        .thumbnail-card-item.is-active-thumb {
           background: #FFFFFF;
           border-color: #121118;
           box-shadow: 
-            0 12px 28px -8px rgba(18, 17, 24, 0.12),
+            0 10px 24px -8px rgba(18, 17, 24, 0.12),
             0 0 0 2px #121118,
             inset 0 1.5px 2px #FFFFFF;
         }
 
-        .deck-card-top {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 0.75rem;
+        .thumbnail-dot-indicator {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #D4D1DC;
+          flex-shrink: 0;
+          transition: background 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .deck-card-num {
+        .thumbnail-card-item.is-active-thumb .thumbnail-dot-indicator {
+          background: #F5D0FE;
+          box-shadow: 0 0 8px rgba(245, 208, 254, 0.9);
+        }
+
+        .thumbnail-content-meta {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .thumbnail-step-num {
           font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-          font-size: 0.72rem;
-          font-weight: 700;
-          color: #8E8B99;
-        }
-
-        .deck-card-cat {
           font-size: 0.65rem;
           font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-          padding: 0.15rem 0.5rem;
-          border-radius: 9999px;
-          background: rgba(38, 36, 46, 0.05);
-          color: #63606E;
-        }
-
-        .deck-card-title {
-          font-size: 0.9375rem;
-          font-weight: 700;
-          line-height: 1.25;
-          color: #121118;
-          margin: 0 0 0.5rem 0;
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-
-        .deck-card-bottom {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          font-size: 0.72rem;
           color: #8E8B99;
-          margin-top: 0.5rem;
+          display: block;
+          margin-bottom: 0.15rem;
         }
 
-        /* =========================================================
-           RESPONSIVE REFINEMENTS
-           ========================================================= */
+        .thumbnail-proj-title {
+          font-size: 0.8125rem;
+          font-weight: 700;
+          color: #121118;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        /* Responsive Breakpoints */
         @media (max-width: 960px) {
-          .spotlight-stage {
+          .tree-stage-split {
             grid-template-columns: 1fr;
+            max-height: none;
             gap: 2rem;
           }
 
-          .viewport-screen-stage {
+          .threejs-tree-canvas-container {
             min-height: 360px;
-            padding: 1.25rem;
           }
 
-          .projects-deck-strip {
+          .projects-thumbnail-deck {
             grid-template-columns: repeat(2, 1fr);
           }
         }
 
         @media (max-width: 600px) {
-          .projects-creative-section {
-            padding: 4.5rem 1rem 5.5rem 1rem;
+          .projects-showcase-section {
+            padding: 4rem 1rem 4.5rem 1rem;
           }
 
-          .projects-deck-strip {
+          .projects-thumbnail-deck {
             grid-template-columns: 1fr;
           }
 
-          .dossier-card {
-            padding: 1.75rem 1.25rem;
+          .spotlight-project-dossier {
+            padding: 1.5rem 1.25rem;
           }
         }
       `}</style>
 
-      <div className="projects-container">
+      <div className="projects-wrapper">
         
         {/* =========================================================
             SECTION HEADER
@@ -680,266 +785,174 @@ export const Projects: React.FC = () => {
           </h2>
 
           <p className="projects-subtitle">
-            Enterprise Spring Boot REST backends, reactive full-stack interfaces, 
-            and computer vision models with verified performance records.
+            Interactive branching showcase featuring full-stack platforms, 
+            enterprise web portals, and specialized computer vision pipelines.
           </p>
         </div>
 
         {/* =========================================================
-            SEGMENTED FILTER DOCK
+            SPLIT STAGE: 3D THREE.JS TREE DIAGRAM & PROJECT DOSSIER
             ========================================================= */}
-        <div className="projects-filter-dock" role="tablist">
-          <button 
-            className={`filter-btn ${activeCategory === 'all' ? 'active' : ''}`}
-            onClick={() => setActiveCategory('all')}
-            role="tab"
-            aria-selected={activeCategory === 'all'}
-          >
-            All Systems ({projects.length})
-          </button>
-          <button 
-            className={`filter-btn ${activeCategory === 'java' ? 'active' : ''}`}
-            onClick={() => setActiveCategory('java')}
-            role="tab"
-            aria-selected={activeCategory === 'java'}
-          >
-            Spring Boot & Java (1)
-          </button>
-          <button 
-            className={`filter-btn ${activeCategory === 'frontend' ? 'active' : ''}`}
-            onClick={() => setActiveCategory('frontend')}
-            role="tab"
-            aria-selected={activeCategory === 'frontend'}
-          >
-            Full Stack & React (2)
-          </button>
-          <button 
-            className={`filter-btn ${activeCategory === 'ml' ? 'active' : ''}`}
-            onClick={() => setActiveCategory('ml')}
-            role="tab"
-            aria-selected={activeCategory === 'ml'}
-          >
-            AI & Computer Vision (2)
-          </button>
-        </div>
-
-        {/* =========================================================
-            SPOTLIGHT STAGE (SPLIT VIEW)
-            ========================================================= */}
-        <div className="spotlight-stage">
+        <div className="tree-stage-split">
           
-          {/* LEFT: ARCHITECTURAL DOSSIER */}
+          {/* LEFT: INTERACTIVE THREE.JS 3D TREE DIAGRAM */}
+          <div className="threejs-tree-canvas-container">
+            <div className="tree-canvas-badge">
+              <Layers size={13} className="text-zinc-600" />
+              <span>Interactive 3D Branch Architecture</span>
+            </div>
+
+            {/* Three.js Canvas Mount */}
+            <div ref={mountRef} style={{ width: '100%', height: '100%' }} />
+
+            {/* Stepper Navigation across Nodes */}
+            <div className="tree-nav-controls">
+              <button 
+                onClick={handlePrev} 
+                className="tree-nav-btn" 
+                title="Previous Project Node"
+                aria-label="Previous Project"
+              >
+                <ChevronLeft size={16} />
+              </button>
+
+              <span className="tree-nav-indicator">
+                {String(activeIdx + 1).padStart(2, '0')} / 04
+              </span>
+
+              <button 
+                onClick={handleNext} 
+                className="tree-nav-btn" 
+                title="Next Project Node"
+                aria-label="Next Project"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
+
+          {/* RIGHT: SPOTLIGHT PROJECT DOSSIER & VIEWPORT PREVIEW */}
           <motion.div 
             key={activeProject.id}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="dossier-card"
+            initial={{ opacity: 0, x: 12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="spotlight-project-dossier"
           >
             <div>
-              <div className="dossier-top-meta">
-                <span className="dossier-index-badge">
-                  {String(activeIndex + 1).padStart(2, '0')} // 05
-                </span>
-                <span className="dossier-metric-pill">
+              <div className="project-dossier-top">
+                <span className="project-category-chip">
                   <Sparkles size={12} />
-                  <span>{activeProject.metrics}</span>
+                  <span>{activeProject.categoryLabel}</span>
+                </span>
+                <span className="project-metric-text">
+                  {activeProject.metrics}
                 </span>
               </div>
 
-              <h3 className="dossier-title">
+              <h3 className="project-dossier-title">
                 {activeProject.title}
               </h3>
 
-              <p className="dossier-subtitle">
+              <p className="project-dossier-subtitle">
                 {activeProject.subtitle}
               </p>
 
-              <p className="dossier-desc">
+              <p className="project-dossier-desc">
                 {activeProject.description}
               </p>
 
-              {/* Highlights */}
-              <ul className="dossier-highlights-list">
-                {activeProject.features.slice(0, 3).map((feat, i) => (
-                  <li key={i} className="dossier-highlight-item">
-                    {feat}
-                  </li>
-                ))}
-              </ul>
-            </div>
+              {/* Clickable Image / Viewport Preview Mockup */}
+              <div 
+                className="project-preview-mockup-frame"
+                onClick={() => handleOpenLink(activeProject.liveUrl || activeProject.githubUrl)}
+                title="Click to Open Live Project"
+              >
+                <div className="preview-chrome-bar">
+                  <div className="preview-lights">
+                    <span className="preview-light preview-light-red" />
+                    <span className="preview-light preview-light-yellow" />
+                    <span className="preview-light preview-light-green" />
+                  </div>
+                  <div className="preview-address-url">
+                    {activeProject.liveUrl || activeProject.githubUrl}
+                  </div>
+                </div>
 
-            <div>
+                <div className="preview-screen-body">
+                  <div className="preview-screen-overlay">
+                    <div className="preview-launch-pill">
+                      <span>Launch Project</span>
+                      <ArrowUpRight size={14} />
+                    </div>
+                  </div>
+
+                  <div className="mockup-inner-brand">
+                    <span className="mockup-brand-title">
+                      {activeProject.title}
+                    </span>
+                    <span className="mockup-brand-badge">
+                      <CheckCircle2 size={12} />
+                      <span>{activeProject.metrics}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
               {/* Tech Stack Pills */}
-              <div className="dossier-tags-row">
+              <div className="project-tech-tags">
                 {activeProject.techStack.map((tech) => (
-                  <span key={tech} className="dossier-tag">
+                  <span key={tech} className="project-tech-tag">
                     <TechLogo name={tech} size={13} className="text-zinc-600" />
                     <span>{tech}</span>
                   </span>
                 ))}
               </div>
-
-              {/* CTA Action Buttons */}
-              <div className="dossier-actions">
-                <button 
-                  onClick={() => handleOpenLink(activeProject.githubUrl)}
-                  className="btn-github-action"
-                  title="Open GitHub Repository"
-                >
-                  <GithubIcon size={16} />
-                  <span>View Codebase ↗</span>
-                </button>
-
-                <button 
-                  onClick={() => setModalProject(activeProject)}
-                  className="btn-details-action"
-                >
-                  <Eye size={15} />
-                  <span>System Specs</span>
-                </button>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* RIGHT: INTERACTIVE DEVICE VIEWPORT PREVIEW */}
-          <motion.div 
-            key={`preview-${activeProject.id}`}
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="preview-viewport-window"
-            onClick={() => handleOpenLink(activeProject.liveUrl || activeProject.githubUrl)}
-            title="Click to Open Live Project / Repository"
-          >
-            {/* macOS Chrome */}
-            <div className="window-chrome">
-              <div className="window-traffic-lights">
-                <span className="light-dot light-red" />
-                <span className="light-dot light-yellow" />
-                <span className="light-dot light-green" />
-              </div>
-
-              <div className="window-address-bar">
-                <ShieldCheck size={12} className="text-emerald-400" />
-                <span>https://</span>
-                <span className="window-address-text">
-                  github.com/jershika26/{activeProject.id.replace('proj-', '')}
-                </span>
-              </div>
             </div>
 
-            {/* Screen Stage with Interactive UI Simulation */}
-            <div className="viewport-screen-stage">
-              {/* Hover Launch Overlay */}
-              <div className="viewport-hover-overlay">
-                <div className="launch-pill-cta">
-                  <span>Open Live Project / Repository</span>
-                  <ArrowUpRight size={16} />
-                </div>
-              </div>
+            {/* Action Buttons */}
+            <div className="project-dossier-actions">
+              <button 
+                onClick={() => handleOpenLink(activeProject.liveUrl || activeProject.githubUrl)}
+                className="btn-live-launch"
+              >
+                <span>Visit Project ↗</span>
+              </button>
 
-              {/* Mockup Canvas */}
-              <div className="mockup-canvas-wrapper">
-                <div className="mockup-header-bar">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#27C93F' }} />
-                    <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#FFFFFF' }}>
-                      {activeProject.title}
-                    </span>
-                  </div>
-                  <span className="mockup-pill-green">ONLINE // REST OK</span>
-                </div>
-
-                <div className="mockup-stats-grid">
-                  <div className="mockup-stat-card">
-                    <span className="mockup-stat-val">200 OK</span>
-                    <span className="mockup-stat-label">API Status</span>
-                  </div>
-                  <div className="mockup-stat-card">
-                    <span className="mockup-stat-val">&lt; 45ms</span>
-                    <span className="mockup-stat-label">Latency</span>
-                  </div>
-                  <div className="mockup-stat-card">
-                    <span className="mockup-stat-val">100%</span>
-                    <span className="mockup-stat-label">Type Safe</span>
-                  </div>
-                </div>
-
-                <div className="mockup-data-board">
-                  <div className="mockup-row">
-                    <span>Repository Core</span>
-                    <span style={{ color: '#F5D0FE', fontFamily: 'monospace' }}>
-                      {activeProject.techStack[0]} // {activeProject.categoryLabel}
-                    </span>
-                  </div>
-                  <div className="mockup-row">
-                    <span>Performance Benchmark</span>
-                    <span style={{ color: '#3ECF8E', fontWeight: 600 }}>
-                      {activeProject.metrics}
-                    </span>
-                  </div>
-                  <div className="mockup-row">
-                    <span>Architecture Engine</span>
-                    <span style={{ color: '#E2E0E8' }}>
-                      {activeProject.architecturePoints?.[0] || 'Clean Microservice Architecture'}
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <button 
+                onClick={() => handleOpenLink(activeProject.githubUrl)}
+                className="btn-github-code"
+                title="View GitHub Repository"
+              >
+                <GithubIcon size={15} />
+                <span>Source</span>
+              </button>
             </div>
           </motion.div>
 
         </div>
 
         {/* =========================================================
-            HORIZONTAL QUICK-SWITCH STRIP
+            THUMBNAILS SELECTOR STRIP (Shown One by One)
             ========================================================= */}
-        <div className="projects-deck-strip">
+        <div className="projects-thumbnail-deck">
           {projects.map((proj, idx) => {
-            const isSelected = proj.id === activeProject.id;
+            const isSelected = idx === activeIdx;
 
             return (
               <div 
                 key={proj.id}
-                onClick={() => setSelectedProjectId(proj.id)}
-                className={`deck-item-card ${isSelected ? 'is-active-card' : ''}`}
+                onClick={() => setActiveIdx(idx)}
+                className={`thumbnail-card-item ${isSelected ? 'is-active-thumb' : ''}`}
               >
-                <div>
-                  <div className="deck-card-top">
-                    <span className="deck-card-num">
-                      {String(idx + 1).padStart(2, '0')}
-                    </span>
-                    <span className="deck-card-cat">
-                      {proj.categoryLabel}
-                    </span>
-                  </div>
-
-                  <h4 className="deck-card-title">
+                <div className="thumbnail-dot-indicator" />
+                <div className="thumbnail-content-meta">
+                  <span className="thumbnail-step-num">
+                    NODE 0{idx + 1}
+                  </span>
+                  <div className="thumbnail-proj-title">
                     {proj.title}
-                  </h4>
-                </div>
-
-                <div className="deck-card-bottom">
-                  <span>{proj.techStack[0]}</span>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOpenLink(proj.githubUrl);
-                    }}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      padding: '2px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      color: isSelected ? '#121118' : '#8E8B99'
-                    }}
-                    title="Open on GitHub"
-                  >
-                    <GithubIcon size={14} />
-                  </button>
+                  </div>
                 </div>
               </div>
             );
@@ -947,12 +960,6 @@ export const Projects: React.FC = () => {
         </div>
 
       </div>
-
-      {/* Project Details Modal */}
-      <ProjectModal 
-        project={modalProject}
-        onClose={() => setModalProject(null)}
-      />
     </section>
   );
 };

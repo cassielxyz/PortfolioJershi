@@ -296,21 +296,21 @@ export const Experience: React.FC = () => {
 
         /* =========================================================
            MY STORY: CLEAN, REFINED MINIMALIST CONTAINER
-           Matching the exact aesthetic from the reference
+           Matching our exact theme: Black, Ash, White, minimal pinkish-lavender
            ========================================================= */
         .story {
           position: relative;
           z-index: 1;
-          background: #FAF7F5;
+          background: #FAF7FC;
           background-image: 
-            radial-gradient(ellipse 55% 50% at 6% 24%, rgba(245, 208, 254, 0.45) 0%, rgba(254, 215, 226, 0.22) 42%, transparent 75%),
-            radial-gradient(ellipse 45% 45% at 94% 76%, rgba(245, 208, 254, 0.28) 0%, transparent 70%),
-            repeating-linear-gradient(42deg, rgba(26, 24, 24, 0.016) 0 1px, transparent 1px 12px),
-            linear-gradient(176deg, #FAF7F5 0%, #F5F1ED 54%, #EFEBE7 100%);
-          border-top: 1px solid rgba(26, 24, 24, 0.08);
-          box-shadow: inset 0 1.75rem 2.25rem -1.75rem rgba(26, 24, 24, 0.12);
+            radial-gradient(ellipse 55% 50% at 6% 24%, rgba(245, 208, 254, 0.35) 0%, rgba(230, 215, 245, 0.18) 45%, transparent 75%),
+            radial-gradient(ellipse 45% 45% at 94% 76%, rgba(245, 208, 254, 0.22) 0%, transparent 70%),
+            repeating-linear-gradient(42deg, rgba(38, 36, 46, 0.016) 0 1px, transparent 1px 12px),
+            linear-gradient(180deg, #FAF7FC 0%, #F5F3F8 50%, #FAF7FC 100%);
+          border-top: 1px solid rgba(38, 36, 46, 0.08);
+          box-shadow: inset 0 1.75rem 2.25rem -1.75rem rgba(38, 36, 46, 0.08);
           box-sizing: border-box;
-          color: #1A1818;
+          color: #121118;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Plus Jakarta Sans", Helvetica, Arial, sans-serif;
           overflow: visible;
         }
@@ -368,7 +368,7 @@ export const Experience: React.FC = () => {
           gap: 0.45rem;
           font-size: 0.8125rem;
           font-weight: 500;
-          color: rgba(26, 24, 24, 0.68);
+          color: #63606E;
           margin: 0 0 0.45rem 0;
           letter-spacing: -0.01em;
         }
@@ -377,7 +377,7 @@ export const Experience: React.FC = () => {
           display: inline-block;
           font-size: 0.95rem;
           line-height: 1;
-          color: rgba(26, 24, 24, 0.6);
+          color: #F5D0FE;
         }
 
         /* Headline: Let's go back in time. */
@@ -387,7 +387,7 @@ export const Experience: React.FC = () => {
           font-weight: 700;
           line-height: 1.04;
           letter-spacing: -0.035em;
-          color: #1A1818;
+          color: #121118;
         }
 
         /* Mechanical Rolling Year Digits (Odometer) */
@@ -399,7 +399,7 @@ export const Experience: React.FC = () => {
           line-height: 1;
           letter-spacing: -0.055em;
           font-variant-numeric: tabular-nums;
-          color: #1A1818;
+          color: #121118;
         }
 
         .dg {
@@ -435,7 +435,7 @@ export const Experience: React.FC = () => {
           font-weight: 600;
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: rgba(26, 24, 24, 0.6);
+          color: #63606E;
         }
 
         /* Rewind Progress Meter */
@@ -446,7 +446,7 @@ export const Experience: React.FC = () => {
           margin-top: 1.35rem;
           font-size: 0.8125rem;
           font-weight: 600;
-          color: #1A1818;
+          color: #121118;
           font-variant-numeric: tabular-nums;
           width: 100%;
           max-width: 290px;
@@ -455,17 +455,17 @@ export const Experience: React.FC = () => {
         .story__rw {
           width: 1.15rem;
           height: 1.15rem;
-          color: rgba(26, 24, 24, 0.6);
+          color: #63606E;
           transition: transform 0.08s linear;
         }
 
         .story__count {
           font-weight: 700;
-          color: #1A1818;
+          color: #121118;
         }
 
         .story__of {
-          color: rgba(26, 24, 24, 0.45);
+          color: #8E8B99;
           font-weight: 500;
         }
 
@@ -474,14 +474,14 @@ export const Experience: React.FC = () => {
           flex: 0 1 9.5rem;
           height: 1.5px;
           margin-left: 0.4rem;
-          background: rgba(26, 24, 24, 0.14);
+          background: rgba(38, 36, 46, 0.14);
           overflow: hidden;
         }
 
         .story__bar b {
           position: absolute;
           inset: 0;
-          background: #1A1818;
+          background: #121118;
           transform-origin: 0 50%;
           transition: transform 0.05s linear;
         }
@@ -502,7 +502,7 @@ export const Experience: React.FC = () => {
           position: absolute;
           left: 0.45rem;
           width: 1.5px;
-          background: rgba(26, 24, 24, 0.12);
+          background: rgba(38, 36, 46, 0.12);
           pointer-events: none;
           z-index: 1;
         }
@@ -512,7 +512,7 @@ export const Experience: React.FC = () => {
           position: absolute;
           left: 0.45rem;
           width: 1.5px;
-          background: #1A1818;
+          background: #121118;
           pointer-events: none;
           z-index: 2;
         }
@@ -533,8 +533,8 @@ export const Experience: React.FC = () => {
           width: 0.9rem;
           height: 0.9rem;
           border-radius: 50%;
-          background: #1A1818;
-          box-shadow: 0 0 0 0.35rem rgba(26, 24, 24, 0.08);
+          background: #121118;
+          box-shadow: 0 0 0 0.35rem rgba(245, 208, 254, 0.5);
           transition: background 0.45s ease, box-shadow 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -577,7 +577,7 @@ export const Experience: React.FC = () => {
           font-weight: 600;
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: rgba(26, 24, 24, 0.55);
+          color: #63606E;
           opacity: 0.3;
           transform: translateY(10px);
           transition: 
@@ -587,6 +587,7 @@ export const Experience: React.FC = () => {
 
         .ch.on .ch__date {
           opacity: 1;
+          color: #4A1D96;
           transform: translateY(0);
         }
 
@@ -597,7 +598,7 @@ export const Experience: React.FC = () => {
           font-weight: 700;
           line-height: 1.15;
           letter-spacing: -0.025em;
-          color: #1A1818;
+          color: #121118;
           opacity: 0.3;
           transform: translateY(14px);
           transition: 
@@ -615,7 +616,7 @@ export const Experience: React.FC = () => {
           margin: 0 0 1.15rem 0;
           font-size: 0.92rem;
           line-height: 1.4;
-          color: rgba(26, 24, 24, 0.65);
+          color: #63606E;
           opacity: 0.3;
           transform: translateY(12px);
           transition: 
@@ -643,7 +644,7 @@ export const Experience: React.FC = () => {
           padding-left: 1.15rem;
           font-size: 0.86rem;
           line-height: 1.6;
-          color: rgba(26, 24, 24, 0.78);
+          color: #26242E;
           opacity: 0.25;
           transform: translateY(12px);
           transition: 
@@ -655,7 +656,7 @@ export const Experience: React.FC = () => {
           content: "–";
           position: absolute;
           left: 0;
-          color: rgba(26, 24, 24, 0.4);
+          color: #8E8B99;
           font-weight: 400;
         }
 

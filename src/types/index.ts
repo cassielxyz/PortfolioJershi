@@ -20,7 +20,7 @@ export interface ProjectItem {
   id: string;
   title: string;
   subtitle: string;
-  category: 'fullstack' | 'frontend' | 'ml' | 'java';
+  category: string;
   categoryLabel: string;
   description: string;
   longDescription?: string;

@@ -557,27 +557,30 @@ A modern, high-performance portfolio for **Jershika C**, an Honors Computer Scie
 
 ---
 
-### #26. Creative Projects Showcase & Live Viewport Preview Architecture (`src/components/Projects.tsx`)
+### #26. 3D Three.js Tree Architecture & Project Showcase (`src/components/Projects.tsx`)
 - **Date**: 2026-11-02
-- **Driver**: User requested a highly creative Projects section with interactive live project previews, direct click-through to sites/repositories, and GitHub buttons with icons adhering to `cortex-taste`.
+- **Driver**: User requested harmonizing Experience section colors to the Black, Ash, White, minimal pinkish-lavender theme, removing AI elements, resizing the project section to fit comfortably on screen, shortening descriptions, and building a creative 3D Three.js tree diagram showing projects one by one with live previews and thumbnails.
 - **Deliverables & Architectural Decisions**:
-  1. **Segmented Liquid Glass Filter Dock**:
-     - Categories: All Systems (5), Spring Boot & Java (1), Full Stack & React (2), AI & Computer Vision (2).
-     - Obsidian active button with ambient shadow and smooth transition.
-  2. **Split Spotlight Stage**:
-     - **Left Column: Architectural Dossier**:
-       - Project index (`01 // 05`), verified performance metrics badge (`92% Accuracy on 500+ Images`, `Full CRUD & Search Engine`, `Real-Time Adaptive Signals`).
-       - Display headline, system subtitle, comprehensive technical description, and key architecture highlights.
-       - Authentic brand tech stack tags powered by `TechLogo` component.
-       - **Action CTAs**: Primary Dark Liquid Glass **View Codebase ↗** button with official `GithubIcon`, and **System Specs** details button.
-     - **Right Column: Interactive Device Viewport Preview**:
-       - Modeled as a macOS browser window with 3 traffic light buttons, HTTPS URL bar (`github.com/jershika26/<project>`).
-       - Live UI simulation dashboard (API status 200 OK, latency metrics, repository telemetry).
-       - **Direct Click-To-Open**: Hovering displays a liquid glass `"Open Live Project / Repository ↗"` floating pill. Clicking anywhere on the preview opens the live site or GitHub repo in a new tab!
-  3. **Horizontal Quick-Switch Deck**:
-     - Bottom row of 5 project cards for instantaneous switching with Framer Motion spring physics.
-     - Direct mini GitHub link icon on each card.
-  4. **Verification**:
-     - `npm run build` passed with exit code 0.
+  1. **Experience Section Color Harmonization**:
+     - Aligned base background to `#FAF7FC` with `linear-gradient(180deg, #FAF7FC 0%, #F5F3F8 50%, #FAF7FC 100%)`.
+     - Ambient lighting tuned to whisper pinkish-lavender `rgba(245, 208, 254, 0.35)` and cool violet ash `rgba(230, 215, 245, 0.18)`.
+     - Text, rail, and dot elements tuned to `#121118`, `#63606E`, `#8E8B99`.
+     - Dial tunnel strokes in canvas set to `38, 36, 46` with lavender stardust.
+     - Preserved all layouts, mechanical rolling digits, hyphen bullets, in-out animations, and slow scroll rhythm. Synchronized to `backups/sections_v1_fixed/Experience.tsx`.
+  2. **4 Real Verified Projects**:
+     - **London Star Education**: `https://lse.rkitest.com/` (International educational portal)
+     - **Mydoo**: `https://mydoo.in` (Comprehensive school management ERP)
+     - **House of Greens**: `https://houseofgreens.co.in` (Botanical storefront with WhatsApp commerce)
+     - **Underwater Object Detection System**: `https://github.com/jershika26/underwater-object-detection-of-marine-study` (Marine computer vision pipeline)
+  3. **Interactive 3D Three.js Tree Diagram**:
+     - Built with Three.js (`three`): Central vertical organic trunk with 4 branching bezier curves and glowing project orbital nodes.
+     - Projects are shown one by one: Active node illuminates with a radiant whisper-lavender halo (`0xF5D0FE`) and orbital rings.
+     - Interactive node clicking in 3D (raycasting) + stepper controls (`<` and `>`) smoothly glide the camera to the active branch.
+  4. **Compact Viewport Screen Fit**:
+     - Split stage: 3D Tree Canvas on left, Project Dossier + Clickable macOS Browser Mockup on right.
+     - Clicking the preview opens the live site or repository directly in a new tab.
+     - Bottom thumbnail selector strip (Node 01 to 04) for direct jumping.
+     - Descriptions are kept short, simple, and punchy.
+  5. **Verification**:
+     - `npm run build` passed with exit code 0 (`tsc -b && vite build`).
      - Dev server active at `http://localhost:5173/`.
-     - Sections 1, 2, and 3 remain preserved and fully operational.

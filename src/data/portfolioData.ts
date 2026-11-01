@@ -212,28 +212,26 @@ export const experiences: ExperienceItem[] = [
 
 export const projects: ProjectItem[] = [
   {
-    id: "proj-real-estate",
-    title: "Real Estate Management System",
-    subtitle: "Enterprise property, buyer & seller platform with Spring Boot & Supabase PostgreSQL",
-    category: "java",
-    categoryLabel: "Java / Spring Boot",
-    description: "An enterprise backend and full-stack application built using Spring Boot to manage buyer, seller, and property portfolios with performant REST APIs for complete CRUD operations.",
-    longDescription: "Developed an enterprise-grade backend and management application using Spring Boot and React.js. The system integrates Supabase-hosted PostgreSQL using JPA/Hibernate for seamless object-relational mapping, structured querying, and automated schema migrations. Features advanced multi-variable search and filtering based on geographic location, budget parameters, and property categories, alongside data validation and duplicate phone number resolution to ensure data fidelity.",
+    id: "proj-london-star",
+    title: "London Star Education",
+    subtitle: "International education platform and academic portal with dynamic enrollment",
+    category: "web",
+    categoryLabel: "Educational Portal",
+    description: "Comprehensive institutional web platform delivering interactive curriculum access, student portal services, and dynamic program enrollment.",
+    longDescription: "Engineered a high-performance international academic platform for London Star Education. Designed with responsive, accessible web architecture delivering real-time course discovery, program requirements, and streamlined student application workflows.",
     features: [
-      "Comprehensive CRUD REST APIs engineered with Spring Boot for buyers, sellers, and listings",
-      "PostgreSQL database hosted on Supabase integrated via JPA and Hibernate ORM",
-      "Dynamic multi-attribute filtering by location, price bracket, and property typology",
-      "Strict data validation rules and duplicate phone number prevention logic for clean datasets",
-      "Modular MVC architecture with clean service and repository decoupling"
+      "Interactive curriculum and international course discovery catalog",
+      "Student enrollment portal with verified credential validation",
+      "Responsive academic interface designed with modern UI standards"
     ],
     architecturePoints: [
-      "Spring Boot REST Controllers with DTO validation",
-      "JPA / Hibernate Entity Relationships & Custom Queries",
-      "Cloud PostgreSQL on Supabase with connection pooling",
-      "React.js frontend dashboard consuming REST endpoints"
+      "Component-driven layout with fluid accessibility standards",
+      "Optimized static asset delivery and sub-second load times",
+      "Clean client-side routing and structured navigation flow"
     ],
-    techStack: ["Java", "Spring Boot", "REST APIs", "JPA/Hibernate", "PostgreSQL", "Supabase", "React.js"],
-    metrics: "Full CRUD & Search Engine",
+    techStack: ["React.js", "TypeScript", "REST APIs", "Modern Web", "Tailwind CSS"],
+    metrics: "Live Institutional Portal",
+    liveUrl: "https://lse.rkitest.com/",
     githubUrl: "https://github.com/jershika26",
     featured: true,
     gradient: "from-blue-600 via-indigo-600 to-purple-600"
@@ -242,16 +240,14 @@ export const projects: ProjectItem[] = [
     id: "proj-mydoo",
     title: "Mydoo – School Management Platform",
     subtitle: "Institutional administration platform with location-based admissions search",
-    category: "frontend",
-    categoryLabel: "React / TypeScript",
-    description: "Developed and maintained a modern school management platform with highly responsive UI components and REST API integration for administrative workflows.",
-    longDescription: "Engineered responsive, accessible user interface modules in React.js and TypeScript for institutional management. Implemented school profile administrative portals, admission detail tracking, and interactive location-based school search to streamline parental discovery and school registration.",
+    category: "web",
+    categoryLabel: "School Management",
+    description: "Modern school administration system featuring parental discovery tools, admissions tracking, and institutional workflow automation.",
+    longDescription: "Engineered responsive user interface modules in React.js and TypeScript for institutional management. Implemented school profile administrative portals, admission detail tracking, and interactive location-based school search to streamline parental discovery and school registration.",
     features: [
       "Complete school profile management suite for administrators",
       "Student admission details processing and verification pipeline",
-      "Location-based search and filter functionality for fast institutional discovery",
-      "Type-safe component architecture built with TypeScript and React.js",
-      "Optimized REST API consumption for rapid page loads and fluid state transitions"
+      "Location-based search and filter functionality for fast institutional discovery"
     ],
     architecturePoints: [
       "TypeScript interfaces ensuring strict contract compliance",
@@ -259,87 +255,61 @@ export const projects: ProjectItem[] = [
       "RESTful API client with error boundaries and fallback states"
     ],
     techStack: ["React.js", "TypeScript", "REST APIs", "CSS Glassmorphism", "State Management"],
-    metrics: "Type-Safe EdTech Architecture",
+    metrics: "Admissions & Student ERP",
+    liveUrl: "https://mydoo.in",
     githubUrl: "https://github.com/jershika26",
     featured: true,
     gradient: "from-purple-600 via-pink-600 to-rose-600"
   },
   {
-    id: "proj-traffic-control",
-    title: "Real-Time Traffic Forecasting & Congestion Control",
-    subtitle: "Intelligent urban traffic prediction and dynamic signal regulation using Machine Learning",
-    category: "ml",
-    categoryLabel: "AI & Machine Learning",
-    description: "An intelligent urban traffic management and forecasting system utilizing machine learning models to predict real-time congestion and dynamically optimize traffic signal timings.",
-    longDescription: "Trained predictive models using XGBoost to forecast congestion patterns and urban bottlenecks in real time. Deployed computer vision using OpenCV and YOLO to detect and count vehicular volume across junctions. Formulated a dynamic adaptive signal timing algorithm that responds dynamically to forecast conditions, reducing urban transit delays.",
+    id: "proj-house-of-greens",
+    title: "House of Greens – Botanical Storefront",
+    subtitle: "Eco-friendly botanical enterprise platform with direct WhatsApp commerce",
+    category: "web",
+    categoryLabel: "E-Commerce & WhatsApp",
+    description: "Botanical enterprise e-commerce storefront with curated plant catalogs and integrated direct-to-WhatsApp order dispatch.",
+    longDescription: "Created an engaging digital storefront and brand showcase for House of Greens using React.js. Features responsive catalog browsing, botanical care recommendations, and seamless WhatsApp click-to-chat integration that routes enquiries straight into sales conversations.",
     features: [
-      "Predictive machine learning pipeline powered by XGBoost for congestion forecasting",
-      "Computer vision integration with YOLO and OpenCV for live vehicular tracking",
-      "Dynamic traffic signal cycle optimization algorithm based on congestion thresholds",
-      "Flask backend serving real-time analytics and predictive telemetry",
-      "Responsive web dashboard designed with HTML5 and Bootstrap"
+      "Mobile-first responsive interface with species-specific care guides",
+      "Direct WhatsApp communication gateway for immediate customer inquiries",
+      "Curated product showcases and dynamic gallery components"
     ],
     architecturePoints: [
-      "XGBoost regression and classification pipelines",
-      "YOLO object detection inference pipeline",
-      "Flask REST API microservices for prediction streaming"
+      "Component-driven layout with fluid grid system",
+      "Custom WhatsApp API deep-linking integration",
+      "Fast static rendering and client-side transitions"
     ],
-    techStack: ["Python", "Flask", "XGBoost", "OpenCV", "YOLO", "HTML5", "Bootstrap"],
-    metrics: "Real-Time Adaptive Signals",
+    techStack: ["React.js", "JavaScript", "WhatsApp API", "Tailwind CSS"],
+    metrics: "Direct WhatsApp Inquiries",
+    liveUrl: "https://houseofgreens.co.in",
     githubUrl: "https://github.com/jershika26",
     featured: true,
-    gradient: "from-amber-500 via-orange-600 to-red-600"
+    gradient: "from-emerald-500 via-teal-600 to-cyan-600"
   },
   {
     id: "proj-underwater-cv",
-    title: "Underwater Object Recognition System",
-    subtitle: "Computer vision model utilizing color-based HSV space segmentation",
-    category: "ml",
-    categoryLabel: "Computer Vision",
-    description: "Designed a specialized computer-vision model to detect and highlight underwater objects using color-based segmentation in the HSV color space, achieving 92% detection accuracy.",
+    title: "Underwater Object Detection System",
+    subtitle: "Marine study computer vision pipeline utilizing HSV space color segmentation",
+    category: "cv",
+    categoryLabel: "Marine Computer Vision",
+    description: "Computer vision marine pipeline utilizing color-based HSV space segmentation for real-time aquatic organism and object identification.",
     longDescription: "Overcame underwater visual degradation challenges (such as light attenuation, turbidity, and color scattering) by implementing custom color-space thresholding in HSV coordinates. Benchmarked and validated across 500+ underwater image sets, achieving a 92% detection accuracy through precision threshold tuning and morphological contour filtering.",
     features: [
       "Robust color-based object segmentation implemented in HSV color space",
       "Calibrated across 500+ real-world underwater images with diverse clarity conditions",
-      "Achieved 92% detection accuracy by fine-tuning HSV boundary thresholds",
-      "Morphological operations for noise reduction and clear contour bounding",
-      "NumPy matrix acceleration for high-speed batch image processing"
+      "Achieved 92% detection accuracy by fine-tuning HSV boundary thresholds"
     ],
     architecturePoints: [
       "HSV color space conversion and dynamic thresholding",
-      "OpenCV morphological transformations (dilation, erosion)",
+      "OpenCV morphological transformations for clean contours",
       "NumPy vectorized image array manipulations"
     ],
     techStack: ["Python", "OpenCV", "NumPy", "Image Processing", "HSV Segmentation"],
     metrics: "92% Accuracy on 500+ Images",
-    githubUrl: "https://github.com/jershika26",
-    featured: false,
+    liveUrl: "https://github.com/jershika26/underwater-object-detection-of-marine-study",
+    githubUrl: "https://github.com/jershika26/underwater-object-detection-of-marine-study",
+    featured: true,
     gradient: "from-cyan-500 via-teal-600 to-emerald-600"
-  },
-  {
-    id: "proj-house-of-greens",
-    title: "House of Greens – Business Website",
-    subtitle: "Vibrant botanical enterprise website with integrated WhatsApp commerce",
-    category: "frontend",
-    categoryLabel: "Frontend Web App",
-    description: "Developed a modern, responsive business web presence for an eco-friendly brand, integrated with direct-to-WhatsApp communication for instant customer conversions.",
-    longDescription: "Created an engaging digital storefront and brand showcase for House of Greens using React.js and React Bootstrap. Features responsive catalog browsing, botanical care recommendations, and seamless WhatsApp click-to-chat integration that routes enquiries straight into sales conversations.",
-    features: [
-      "Mobile-first responsive interface built with React.js and React Bootstrap",
-      "Direct WhatsApp communication gateway for immediate customer inquiries",
-      "Curated product showcases and dynamic gallery components",
-      "Interactive customer enquiry forms with immediate client-side validation"
-    ],
-    architecturePoints: [
-      "Component-driven layout with React Bootstrap grid system",
-      "Custom WhatsApp API deep-linking integration",
-      "Fast static rendering and client-side transitions"
-    ],
-    techStack: ["React.js", "React Bootstrap", "JavaScript", "WhatsApp API", "CSS3"],
-    metrics: "Direct Customer Inquiries",
-    githubUrl: "https://github.com/jershika26",
-    featured: false,
-    gradient: "from-emerald-500 via-teal-600 to-cyan-600"
   }
 ];
 
