@@ -559,7 +559,7 @@ export const Projects: React.FC = () => {
           className="projects-header"
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{ once: false, amount: 0.15 }}
           transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className="projects-eyebrow">
@@ -585,8 +585,8 @@ export const Projects: React.FC = () => {
           className="projects-stage-split"
           initial={{ opacity: 0, y: 36 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+          viewport={{ once: false, amount: 0.12 }}
+          transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
         >
           
           {/* LEFT: CONNECTED NODES CIRCUIT (A dot sits near when clicked) */}

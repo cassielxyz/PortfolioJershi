@@ -647,3 +647,34 @@ A modern, high-performance portfolio for **Jershika C**, an Honors Computer Scie
   5. **Verification**:
      - `npm run build` passed with exit code 0 (`tsc -b && vite build`).
      - Dev server verified active at `http://localhost:5173/` (HTTP 200).
+
+
+---
+
+### #29. Resume Replacement, Lean Full-Screen Terminal, Liquid Glass Footer, Contact Modal Direct Mail Button & React.js Priority Elevation
+- **Date**: 2026-11-02
+- **Driver**: User requested replacing the resume PDF with the newly uploaded `JERSHIKAC_Software developer.pdf`, making the footer smaller and restyling it to Apple Liquid Glass with pinkish lavender accents, removing the "INTERACTIVE COMMUNICATOR" chip, making the contact popup appear slowly and smoothly with a direct email launcher button (no raw email string visible) and mobile number removed, making the developer terminal full screen and leaner in the About section while removing the bento tabs component and 15% API issue reduction stat, adding seamless bidirectional in-view animations across all sections, and giving maximum priority to React.js across the portfolio.
+- **Deliverables & Architectural Decisions**:
+  1. **Resume PDF Replacement (`public/`)**:
+     - Synchronized uploaded `JERSHIKAC_Software developer.pdf` to `public/JERSHIKAC_Software developer.pdf` and `public/Jershika_C_Resume.pdf`.
+     - Updated `portfolioData.ts` and `ResumeModal.tsx` to reference the new resume and reflect the updated React Developer profile summary and technical skills.
+  2. **Lean Full-Screen Terminal & Adaptive Metrics ([`About.tsx`](file:///c:/Users/jesow/Documents/github%20projects/jershika%20portfolio/src/components/About.tsx))**:
+     - Removed the `.bento-tech-deck` card shown in `media_1793566763228_9c0b9548.jpg`.
+     - Centered the Apple Developer Terminal as the centerpiece, making it full width (max 1020px) and leaner with punchy, sequential typewriter-revealed statements prioritizing React.js.
+     - Removed the "15% API Issue Reduction" metric shown in `media_1793566838727_94a48bce.png`, making the remaining 4 stats adaptive to any screen width (`repeat(auto-fit, minmax(240px, 1fr))`).
+  3. **Contact Section Refinements ([`Contact.tsx`](file:///c:/Users/jesow/Documents/github%20projects/jershika%20portfolio/src/components/Contact.tsx))**:
+     - Removed the `● INTERACTIVE COMMUNICATOR` pill shown in `media_1793566529114_b40a5a85.png`.
+     - Contact popup appearance eased to a slow and smooth transition (`0.65s` spring curve).
+     - Replaced the email display card with a direct mail application launcher button (`mailto:jershika2612@gmail.com`) with no raw email string visible.
+     - Completely removed the mobile number component so no phone number is displayed.
+  4. **Compact Apple Liquid Glass Footer ([`Footer.tsx`](file:///c:/Users/jesow/Documents/github%20projects/jershika%20portfolio/src/components/Footer.tsx))**:
+     - Restyled with frosted translucent liquid glass (`rgba(255, 255, 255, 0.92)`), specular top reflection rim, and subtle lavender accents.
+     - Reduced padding to a sleek, compact height (`2.75rem 1.5rem 1.75rem 1.5rem`).
+     - Added React & Full Stack developer summary and direct social links.
+  5. **Bidirectional In-Animations Across Sections**:
+     - Configured Framer Motion `viewport={{ once: false, amount: 0.15 }}` across Projects, Education, Certifications, and Contact so animations trigger seamlessly scrolling both forwards and backwards.
+  6. **React.js Elevation Across Portfolio**:
+     - Emphasized React.js, modern frontend UI, component architecture, and responsive design systems as the top priority in Hero, About, Skills, Projects, Footer, and Resume Modal.
+  7. **Verification**:
+     - `npm run build` passed with exit code 0 (`tsc -b && vite build`).
+     - Dev server responsive at `http://localhost:5173/` (HTTP 200).

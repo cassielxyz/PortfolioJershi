@@ -3,54 +3,39 @@ import type { ExperienceItem, ProjectItem, SkillCategory, EducationItem, Certifi
 export const personalInfo = {
   name: "Jershika C",
   title: "Full Stack Developer",
-  tagline: "Engineering resilient backend architectures and immersive, intuitive frontend web experiences.",
+  tagline: "Engineering high-performance React.js web applications, reusable UI architectures, and scalable full-stack systems.",
   status: "Available for Full-Time Roles & Opportunities",
   email: "jershika2612@gmail.com",
   phone: "+91-6369190238",
   location: "Kanyakumari, Nagercoil, Tamil Nadu, India",
   linkedin: "https://www.linkedin.com/in/jershika-c-10bbb032b",
   github: "https://github.com/jershika26",
-  resumePath: "/Jershika_C_Resume.pdf",
-  bio: "Enthusiastic Computer Science Engineering student with Honors, specializing in Core Java, Spring Boot, React.js, and scalable full-stack web development. Passionate about architecting performant REST APIs, reliable database models, and elegant user interfaces.",
-  extendedBio: "With proven internship and industry experience across enterprise full-stack development, Python backend services, and machine learning, I thrive at the intersection of robust backend engineering and modern frontend design. Dedicated to writing clean, maintainable code, solving complex architectural challenges, and delivering tangible business impact."
+  resumePath: "/JERSHIKAC_Software developer.pdf",
+  bio: "Motivated React Developer with a strong foundation in Computer Science Engineering (Honours) and hands-on experience in building responsive, interactive web applications. Proficient in React.js, JavaScript, HTML, CSS, Bootstrap, and REST API integration. Skilled in developing reusable components, creating user-friendly interfaces, and delivering efficient frontend solutions.",
+  extendedBio: "With proven internship and industry experience across enterprise full-stack development, modern React.js frontend engineering, and RESTful microservices, I thrive at the intersection of reactive client architectures and reliable systems. Dedicated to writing clean, maintainable code, solving complex architectural challenges, and delivering tangible business impact."
 };
 
 export const stats = [
   { label: "Engineering Honors CGPA", value: "8.51", suffix: "/10", detail: "Ponjesly College of Engineering" },
-  { label: "Industry & Internship Roles", value: "4", suffix: "+", detail: "Full Stack & Machine Learning" },
-  { label: "Key Projects Delivered", value: "5", suffix: "+", detail: "Enterprise, Web & AI/CV" },
-  { label: "API Issue Reduction", value: "15", suffix: "%", detail: "Optimized data flow efficiency" },
+  { label: "Industry & Internship Roles", value: "4", suffix: "+", detail: "React.js, Full Stack & Vision" },
+  { label: "Production Web Projects", value: "4", suffix: "", detail: "Enterprise, Portals & Commerce" },
   { label: "CV Model Accuracy", value: "92", suffix: "%", detail: "Tested on 500+ underwater images" }
 ];
 
 export const skillCategories: SkillCategory[] = [
   {
-    id: "backend",
-    title: "Backend Development",
-    iconName: "Server",
-    description: "Robust enterprise services, RESTful microservices, and object-oriented architectures",
-    skills: [
-      { name: "Core Java", highlight: true },
-      { name: "OOPs Concepts", highlight: true },
-      { name: "Spring Boot", highlight: true },
-      { name: "REST APIs", highlight: true },
-      { name: "JPA / Hibernate", highlight: true },
-      { name: "Nest.js" },
-      { name: "Axios API Integration" }
-    ]
-  },
-  {
     id: "frontend",
     title: "Frontend Development",
     iconName: "Layout",
-    description: "Responsive, accessible, and reactive user interfaces built with modern web standards",
+    description: "Responsive, accessible, and reactive user interfaces built with React.js and modern web standards",
     skills: [
       { name: "React.js", highlight: true },
       { name: "TypeScript", highlight: true },
       { name: "JavaScript (ES6+)", highlight: true },
       { name: "HTML5 & CSS3", highlight: true },
-      { name: "Bootstrap & React Bootstrap" },
-      { name: "Responsive UI/UX Design" },
+      { name: "React Bootstrap", highlight: true },
+      { name: "Bootstrap 5", highlight: true },
+      { name: "Responsive UI/UX Design", highlight: true },
       { name: "jQuery" }
     ]
   },
@@ -58,13 +43,28 @@ export const skillCategories: SkillCategory[] = [
     id: "languages",
     title: "Programming Languages",
     iconName: "Code2",
-    description: "Strong foundation in typed object-oriented programming and scripting",
+    description: "Modern JavaScript, TypeScript, Core Java, and Python scripting",
     skills: [
+      { name: "JavaScript", highlight: true },
+      { name: "TypeScript", highlight: true },
       { name: "Java", highlight: true },
       { name: "Python", highlight: true },
-      { name: "TypeScript", highlight: true },
-      { name: "JavaScript", highlight: true },
       { name: "SQL", highlight: true }
+    ]
+  },
+  {
+    id: "backend",
+    title: "Backend Development",
+    iconName: "Server",
+    description: "RESTful microservices, Spring Boot endpoints, and object-oriented architectures",
+    skills: [
+      { name: "REST APIs", highlight: true },
+      { name: "Core Java", highlight: true },
+      { name: "OOPs Concepts", highlight: true },
+      { name: "Spring Boot", highlight: true },
+      { name: "JPA / Hibernate", highlight: true },
+      { name: "Nest.js" },
+      { name: "Axios API Integration" }
     ]
   },
   {

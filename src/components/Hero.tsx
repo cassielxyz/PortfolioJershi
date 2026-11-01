@@ -421,16 +421,16 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResumeModal }) => {
                 <span className="honors-college">Ponjesly College of Engineering</span>
               </motion.div>
 
-              {/* Editorial Summary Bio */}
+              {/* Editorial Summary Bio - Prioritizing React.js */}
               <motion.p
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.55, delay: 0.76 }}
                 className="hero-bio-text"
               >
-                Architecting robust enterprise services with <strong>Spring Boot & PostgreSQL</strong>, 
-                and crafting intuitive, high-performance web applications with <strong>React.js</strong>. 
-                Dedicated to clean architecture, fast API latencies, and modern user experiences.
+                Engineering responsive, interactive web applications with <strong>React.js &amp; modern frontend UI</strong>, 
+                backed by reliable full-stack architectures and performant REST APIs. 
+                Dedicated to reusable component systems, sub-50ms performance, and elegant user experiences.
               </motion.p>
 
               {/* Action Buttons & Social Links */}

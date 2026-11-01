@@ -17,8 +17,8 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose }) => 
 
   const handleDownloadPDF = () => {
     const link = document.createElement('a');
-    link.href = '/Jershika_C_Resume.pdf';
-    link.download = 'Jershika_C_Resume.pdf';
+    link.href = '/JERSHIKAC_Software developer.pdf';
+    link.download = 'JERSHIKAC_Software developer.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -189,35 +189,39 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose }) => 
             </p>
           </div>
 
-          {/* Technical Skills */}
+          {/* Technical Skills - React.js Maximum Priority */}
           <div style={{ marginBottom: '1.75rem' }}>
             <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#120D1A', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1.5px solid rgba(216, 180, 254, 0.45)', paddingBottom: '0.35rem', marginBottom: '0.75rem' }}>
               Technical Skills
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '0.6rem', fontSize: '0.875rem' }}>
               <div>
-                <strong style={{ color: '#120D1A' }}>Programming Languages: </strong>
-                <span style={{ color: '#645674' }}>Java, Python</span>
+                <strong style={{ color: '#120D1A' }}>Frontend Technologies: </strong>
+                <span style={{ color: '#645674' }}>React.js, React Bootstrap, HTML5, CSS3, Bootstrap</span>
               </div>
               <div>
-                <strong style={{ color: '#120D1A' }}>Frontend Technologies: </strong>
-                <span style={{ color: '#645674' }}>HTML, CSS, JavaScript, Bootstrap, React, React Bootstrap, TypeScript</span>
+                <strong style={{ color: '#120D1A' }}>Programming Languages: </strong>
+                <span style={{ color: '#645674' }}>JavaScript, TypeScript, Java</span>
+              </div>
+              <div>
+                <strong style={{ color: '#120D1A' }}>Libraries &amp; Frameworks: </strong>
+                <span style={{ color: '#645674' }}>React, Nest.js, jQuery</span>
               </div>
               <div>
                 <strong style={{ color: '#120D1A' }}>Backend Technologies: </strong>
-                <span style={{ color: '#645674' }}>Core Java, OOPs, Spring Boot, REST APIs, JPA/Hibernate, Nest.js</span>
+                <span style={{ color: '#645674' }}>Core Java, OOPs, Spring Boot, REST APIs</span>
               </div>
               <div>
-                <strong style={{ color: '#120D1A' }}>Databases & Cloud: </strong>
-                <span style={{ color: '#645674' }}>MySQL, PostgreSQL, Supabase, MongoDB</span>
+                <strong style={{ color: '#120D1A' }}>Databases: </strong>
+                <span style={{ color: '#645674' }}>MySQL, MongoDB</span>
               </div>
               <div>
-                <strong style={{ color: '#120D1A' }}>Tools & Platforms: </strong>
-                <span style={{ color: '#645674' }}>VS Code, GitHub, Eclipse IDE, IntelliJ IDEA, Postman, Git, NetBeans IDE</span>
+                <strong style={{ color: '#120D1A' }}>Tools &amp; Platforms: </strong>
+                <span style={{ color: '#645674' }}>VS Code, GitHub, Eclipse IDE, Postman, Git</span>
               </div>
               <div>
                 <strong style={{ color: '#120D1A' }}>Soft Skills: </strong>
-                <span style={{ color: '#645674' }}>Quick Learning, Problem-Solving, Leadership, Team Collaboration, Time Management</span>
+                <span style={{ color: '#645674' }}>Quick Learning, Problem-Solving, Leadership, Team Collaboration, Debugging</span>
               </div>
             </div>
           </div>

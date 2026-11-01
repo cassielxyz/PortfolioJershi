@@ -238,12 +238,12 @@ export const Education: React.FC = () => {
 
       <div className="education-wrapper">
         
-        {/* Section Header with smooth in-animation */}
+        {/* Section Header with smooth bidirectional in-animation */}
         <motion.div 
           className="education-header"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{ once: false, amount: 0.15 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className="education-eyebrow">
@@ -266,10 +266,10 @@ export const Education: React.FC = () => {
           {educationList.map((edu, idx) => (
             <motion.div
               key={edu.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.4, delay: idx * 0.1 }}
+              viewport={{ once: false, amount: 0.15 }}
+              transition={{ duration: 0.45, delay: idx * 0.08 }}
               className={`edu-glass-card ${edu.isHonors ? 'is-honors' : ''}`}
             >
               <div>

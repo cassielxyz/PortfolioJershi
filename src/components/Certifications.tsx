@@ -407,12 +407,12 @@ export const Certifications: React.FC = () => {
       <div className="cert-container">
         
         {/* Section Header */}
-        {/* Section Header with smooth in-animation */}
+        {/* Section Header with smooth bidirectional in-animation */}
         <motion.div 
           className="cert-header"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{ once: false, amount: 0.15 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className="cert-eyebrow">
@@ -430,12 +430,12 @@ export const Certifications: React.FC = () => {
           </p>
         </motion.div>
 
-        {/* Certificate Shell */}
+        {/* Certificate Shell with smooth parallax */}
         <motion.div 
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+          viewport={{ once: false, amount: 0.15 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="certificate-diploma-shell"
         >
           {/* Inner Decorative Frames */}

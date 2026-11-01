@@ -1,12 +1,9 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { 
   Mail, 
-  Phone, 
   MapPin, 
   Send, 
   CheckCircle2, 
-  Copy, 
-  Check, 
   X, 
   ExternalLink
 } from 'lucide-react';
@@ -21,7 +18,6 @@ export const Contact: React.FC = () => {
   const wrapRef = useRef<HTMLDivElement>(null);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [copiedItem, setCopiedItem] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -584,13 +580,6 @@ export const Contact: React.FC = () => {
       window.removeEventListener('resize', onResize);
     };
   }, [triggerActivation]);
-
-  // Handle clipboard copy
-  const handleCopy = (text: string, key: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedItem(key);
-    setTimeout(() => setCopiedItem(null), 2000);
-  };
 
   // Form handling
   const validate = () => {
@@ -1191,15 +1180,9 @@ export const Contact: React.FC = () => {
           className="pull-editorial-lockup"
           initial={{ opacity: 0, y: 35 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
+          viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
-          {/* Eyebrow Chip */}
-          <div className="pull-badge-pill">
-            <span className="pull-live-beacon" />
-            <span>INTERACTIVE COMMUNICATOR</span>
-          </div>
-
           {/* Big Editorial Statement */}
           <h2 className="pull-hero-text">
             Pull this<em>.</em>
@@ -1274,10 +1257,10 @@ export const Contact: React.FC = () => {
           >
             <motion.div 
               className="contact-popup-shell"
-              initial={{ opacity: 0, scale: 0.94, y: 30 }}
+              initial={{ opacity: 0, scale: 0.92, y: 40 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+              exit={{ opacity: 0, scale: 0.94, y: 30 }}
+              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
             >
               {/* Close Button */}
               <button 
@@ -1305,41 +1288,22 @@ export const Contact: React.FC = () => {
                 {/* Left Column: Direct Channels & Socials */}
                 <div className="popup-channels-column">
                   
-                  {/* Email Card */}
-                  <div className="channel-info-card">
+                  {/* Direct Mailto Button (No raw email string visible) */}
+                  <a 
+                    href={`mailto:${personalInfo.email}?subject=Project%20Inquiry%20-%20Jershika%20Portfolio`}
+                    className="channel-info-card email-direct-button"
+                    title="Launch your mail application directly"
+                  >
                     <div className="channel-icon-well">
                       <Mail size={18} />
                     </div>
                     <div className="channel-text-meta">
-                      <div className="channel-meta-label">Primary Inbox</div>
-                      <div className="channel-meta-val">{personalInfo.email}</div>
+                      <div className="channel-meta-label">Direct Communication</div>
+                      <div className="channel-meta-val" style={{ color: '#7E22CE' }}>
+                        Open Mail Application ↗
+                      </div>
                     </div>
-                    <button 
-                      onClick={() => handleCopy(personalInfo.email, 'email')}
-                      className="channel-copy-btn"
-                      title="Copy email address"
-                    >
-                      {copiedItem === 'email' ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
-                    </button>
-                  </div>
-
-                  {/* Phone Card */}
-                  <div className="channel-info-card">
-                    <div className="channel-icon-well">
-                      <Phone size={18} />
-                    </div>
-                    <div className="channel-text-meta">
-                      <div className="channel-meta-label">Telephone</div>
-                      <div className="channel-meta-val">{personalInfo.phone}</div>
-                    </div>
-                    <button 
-                      onClick={() => handleCopy(personalInfo.phone, 'phone')}
-                      className="channel-copy-btn"
-                      title="Copy phone number"
-                    >
-                      {copiedItem === 'phone' ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
-                    </button>
-                  </div>
+                  </a>
 
                   {/* Location Card */}
                   <div className="channel-info-card">
