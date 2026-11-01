@@ -489,11 +489,12 @@ export const Experience: React.FC = () => {
         /* =========================================================
            RIGHT COLUMN: MINIMAL EDITORIAL TIMELINE
            Clean, compact, no bulky cards or containers
+           Smooth in-and-out animations on scroll
            ========================================================= */
         .story__line {
           position: relative;
-          padding-top: 26vh;
-          padding-bottom: 26vh;
+          padding-top: 32vh;
+          padding-bottom: 36vh;
         }
 
         /* Timeline Rail */
@@ -519,22 +520,22 @@ export const Experience: React.FC = () => {
         /* Sticky Travelling Dot */
         .story__sticky-dot-wrapper {
           position: sticky;
-          top: calc(50vh - 0.42rem);
+          top: calc(50vh - 0.45rem);
           left: 0.45rem;
-          margin-left: -0.42rem;
-          width: 0.85rem;
-          height: 0.85rem;
+          margin-left: -0.45rem;
+          width: 0.9rem;
+          height: 0.9rem;
           pointer-events: none;
           z-index: 10;
         }
 
         .story__dot {
-          width: 0.85rem;
-          height: 0.85rem;
+          width: 0.9rem;
+          height: 0.9rem;
           border-radius: 50%;
           background: #1A1818;
-          box-shadow: 0 0 0 0.35rem rgba(26, 24, 24, 0.07);
-          transition: background 0.35s ease, box-shadow 0.35s ease;
+          box-shadow: 0 0 0 0.35rem rgba(26, 24, 24, 0.08);
+          transition: background 0.45s ease, box-shadow 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         /* Chapters List: Generous spacing for smooth slow scroll */
@@ -542,69 +543,112 @@ export const Experience: React.FC = () => {
           position: relative;
           list-style: none;
           margin: 0;
-          padding: 0 0 0 2.5rem;
+          padding: 0 0 0 2.75rem;
           display: flex;
           flex-direction: column;
           gap: 0;
         }
 
-        /* Individual Clean Chapter */
+        /* Individual Clean Chapter: Smooth in-and-out fade and elevation */
         .ch {
           position: relative;
-          padding: 4.8rem 0;
-          opacity: 0.32;
-          transition: opacity 0.45s ease;
+          padding: 8.5rem 0;
+          opacity: 0.22;
+          filter: blur(1.5px);
+          transform: translateY(16px);
+          transition: 
+            opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+            transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+            filter 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+          will-change: opacity, transform, filter;
         }
 
         .ch.on {
           opacity: 1;
+          filter: blur(0px);
+          transform: translateY(0);
         }
 
-        /* Date chip: OCT 2026 — NOW */
+        /* Date chip: OCT 2026 — NOW with smooth stagger */
         .ch__date {
-          margin: 0 0 0.35rem 0;
+          margin: 0 0 0.4rem 0;
           font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
           font-size: 0.72rem;
           font-weight: 600;
-          letter-spacing: 0.12em;
+          letter-spacing: 0.14em;
           text-transform: uppercase;
           color: rgba(26, 24, 24, 0.55);
+          opacity: 0.3;
+          transform: translateY(10px);
+          transition: 
+            opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.04s,
+            transform 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.04s;
         }
 
-        /* Title: Independent freelancer */
+        .ch.on .ch__date {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        /* Title: Full Stack Developer with smooth slide */
         .ch__t {
-          margin: 0 0 0.25rem 0;
+          margin: 0 0 0.3rem 0;
           font-size: 1.625rem;
           font-weight: 700;
           line-height: 1.15;
           letter-spacing: -0.025em;
           color: #1A1818;
+          opacity: 0.3;
+          transform: translateY(14px);
+          transition: 
+            opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.08s,
+            transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
         }
 
-        /* Subtitle: Working for myself, remote-first */
+        .ch.on .ch__t {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        /* Subtitle: Imperial Info System with smooth slide */
         .ch__org {
-          margin: 0 0 1rem 0;
+          margin: 0 0 1.15rem 0;
           font-size: 0.92rem;
           line-height: 1.4;
           color: rgba(26, 24, 24, 0.65);
+          opacity: 0.3;
+          transform: translateY(12px);
+          transition: 
+            opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.12s,
+            transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.12s;
         }
 
-        /* Minimal Hyphen Bullets */
+        .ch.on .ch__org {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        /* Minimal Hyphen Bullets with waterfall stagger */
         .ch__b {
           list-style: none;
           margin: 0;
           padding: 0;
           display: flex;
           flex-direction: column;
-          gap: 0.55rem;
+          gap: 0.6rem;
         }
 
         .ch__b li {
           position: relative;
           padding-left: 1.15rem;
           font-size: 0.86rem;
-          line-height: 1.58;
+          line-height: 1.6;
           color: rgba(26, 24, 24, 0.78);
+          opacity: 0.25;
+          transform: translateY(12px);
+          transition: 
+            opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+            transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .ch__b li::before {
@@ -613,6 +657,24 @@ export const Experience: React.FC = () => {
           left: 0;
           color: rgba(26, 24, 24, 0.4);
           font-weight: 400;
+        }
+
+        .ch.on .ch__b li:nth-child(1) {
+          opacity: 1;
+          transform: translateY(0);
+          transition-delay: 0.16s;
+        }
+
+        .ch.on .ch__b li:nth-child(2) {
+          opacity: 1;
+          transform: translateY(0);
+          transition-delay: 0.22s;
+        }
+
+        .ch.on .ch__b li:nth-child(3) {
+          opacity: 1;
+          transform: translateY(0);
+          transition-delay: 0.28s;
         }
 
         /* =========================================================

@@ -5,15 +5,16 @@
 *Repository Root:* `c:/Users/jesow/Documents/github projects/jershika portfolio`
 
 > [!CAUTION]
-> ### 🔒 STRICT REPOSITORY POLICY: SECTIONS 1, 2, AND 3 ARE FROZEN & LOCKED
-> Sections 1, 2, and 3 have been perfected, verified, and officially locked by the user:
+> ### 🔒 STRICT REPOSITORY POLICY: SECTIONS 1, 2, 3, AND 4 ARE FROZEN & LOCKED
+> Sections 1, 2, 3, and 4 have been perfected, verified, and officially locked by the user:
 > - **Section 1 (Hero)**: `src/components/Hero.tsx` (Portrait water ripple color reveal & masthead parallax)
 > - **Section 2 (About)**: `src/components/About.tsx` (Obsidian Ash macOS Developer Terminal & architecture bento)
 > - **Section 3 (Skills)**: `src/components/Skills.tsx`, `src/data/skillsDeckData.ts`, `src/components/TechLogos.tsx` (Pinned 3D card deck, native sticky runway, bidirectional scroll, minimal liquid glass Spider-Sense, gentle float, and click-anywhere flip)
+> - **Section 4 (Experience)**: `src/components/Experience.tsx` (Rishi Thakor-inspired minimal editorial timeline, pinned time clock, 3D rotating dial tunnel, rolling year odometer, hyphen bullets, smooth in-out text animations, slow scroll rhythm)
 > - **Supporting**: `src/components/Navbar.tsx`, `src/components/ResumeModal.tsx`, `src/index.css`
 >
 > **MANDATE FOR ALL FUTURE PROMPTS & SESSIONS**:  
-> **NEVER modify or refactor any of these 3 sections unless the user explicitly names them and commands changes.**  
+> **NEVER modify or refactor any of these 4 sections unless the user explicitly names them and commands changes.**  
 > Complete backup copy is preserved at `backups/sections_v1_fixed/`.
 
 ---
@@ -539,7 +540,44 @@ A modern, high-performance portfolio for **Jershika C**, an Honors Computer Scie
          - Chapter 3: Ak Info Park (Full Stack Web Development Intern, Feb 2025, 15% Latency Boost)
          - Chapter 4: Srishti Innovative Computer Systems (Python & Data Analysis Intern, Feb 2024 — Mar 2024, Visual Analytics)
          - Includes Key Deliverable & Impact callouts, responsibilities, and `TechLogo` tags.
-  3. **Verification**:
+  3. **In & Out Animations & Slower Scroll Rhythm**:
+     - Extended chapter vertical padding to `padding: 8.5rem 0;` (`padding-top: 32vh; padding-bottom: 36vh;`), giving ample scroll runway and a smooth, unhurried reading cadence.
+     - Implemented bidirectional in/out transitions for chapter elements:
+       - Date chip: `translateY(10px)` to `0`, staggered delay `0.04s`.
+       - Title: `translateY(14px)` to `0`, staggered delay `0.08s`.
+       - Organization: `translateY(12px)` to `0`, staggered delay `0.12s`.
+       - Bullets: staggered entrance across items (`0.16s`, `0.22s`, `0.28s`) with subtle `blur(1.5px)` to clear.
+     - When scrolling out of focus, transitions smoothly ease back into muted states without sudden jumps.
+  4. **Permanent Section 4 Lock**:
+     - Verified copy saved to `backups/sections_v1_fixed/Experience.tsx`.
+     - Marked Section 4 as **LOCKED & FROZEN** in `README.md` and `brain.md`.
+  5. **Verification**:
      - `npm run build` passed with exit code 0 (`tsc -b && vite build`).
      - Dev server verified on `http://localhost:5173/` (HTTP 200).
+
+---
+
+### #26. Creative Projects Showcase & Live Viewport Preview Architecture (`src/components/Projects.tsx`)
+- **Date**: 2026-11-02
+- **Driver**: User requested a highly creative Projects section with interactive live project previews, direct click-through to sites/repositories, and GitHub buttons with icons adhering to `cortex-taste`.
+- **Deliverables & Architectural Decisions**:
+  1. **Segmented Liquid Glass Filter Dock**:
+     - Categories: All Systems (5), Spring Boot & Java (1), Full Stack & React (2), AI & Computer Vision (2).
+     - Obsidian active button with ambient shadow and smooth transition.
+  2. **Split Spotlight Stage**:
+     - **Left Column: Architectural Dossier**:
+       - Project index (`01 // 05`), verified performance metrics badge (`92% Accuracy on 500+ Images`, `Full CRUD & Search Engine`, `Real-Time Adaptive Signals`).
+       - Display headline, system subtitle, comprehensive technical description, and key architecture highlights.
+       - Authentic brand tech stack tags powered by `TechLogo` component.
+       - **Action CTAs**: Primary Dark Liquid Glass **View Codebase ↗** button with official `GithubIcon`, and **System Specs** details button.
+     - **Right Column: Interactive Device Viewport Preview**:
+       - Modeled as a macOS browser window with 3 traffic light buttons, HTTPS URL bar (`github.com/jershika26/<project>`).
+       - Live UI simulation dashboard (API status 200 OK, latency metrics, repository telemetry).
+       - **Direct Click-To-Open**: Hovering displays a liquid glass `"Open Live Project / Repository ↗"` floating pill. Clicking anywhere on the preview opens the live site or GitHub repo in a new tab!
+  3. **Horizontal Quick-Switch Deck**:
+     - Bottom row of 5 project cards for instantaneous switching with Framer Motion spring physics.
+     - Direct mini GitHub link icon on each card.
+  4. **Verification**:
+     - `npm run build` passed with exit code 0.
+     - Dev server active at `http://localhost:5173/`.
      - Sections 1, 2, and 3 remain preserved and fully operational.
