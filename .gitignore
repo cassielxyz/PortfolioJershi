@@ -28,4 +28,5 @@ reference/
 reference.*
 .aicb/
 *.txt
-/jershika.png
+jershika.png
+!public/jershika.png
